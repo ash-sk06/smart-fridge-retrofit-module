@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Presentation: AI Refrigerator Retrofit Module</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .slide { display: none; }
+        .slide.active { display: flex; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .slide-anim { animation: fadeIn 0.35s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between select-none font-sans overflow-hidden">
+
+    <!-- Top Status & Slide Counter Header -->
+    <header class="px-8 py-4 border-b border-slate-800/80 flex justify-between items-center bg-slate-900/50 backdrop-blur z-50">
+        <div class="flex items-center space-x-3">
+            <span class="p-1.5 bg-indigo-600 rounded text-white text-xs font-bold">IDP</span>
+            <span class="text-sm font-semibold tracking-wide text-slate-300">Dual-Zone Refrigerator Retrofit Module</span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span id="slideIndicator" class="text-xs font-mono font-bold text-indigo-400 bg-indigo-950/60 px-3 py-1 rounded-full border border-indigo-800/60">Slide 1 of 10</span>
+            <button onclick="toggleFullscreen()" title="Toggle Fullscreen" class="text-slate-400 hover:text-white text-sm">
+                <i class="fa-solid fa-expand"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Slide Deck Container -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-6 py-8 flex items-center justify-center">
+
+        <!-- SLIDE 1: TITLE -->
+        <div class="slide active slide-anim flex-col items-center justify-center text-center space-y-6 max-w-4xl" data-index="1">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-mono font-semibold">
+                <i class="fa-solid fa-microchip text-indigo-400"></i>
+                <span>2nd-Year Innovative Design Project (IDP) • Patent Track</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                An Event-Gated Dual-Zone Differential Gravimetric & Optical Retrofit Module
+            </h1>
+            <p class="text-lg text-slate-400 max-w-2xl">
+                Continuous In-Container Fluid Depletion Tracking for Conventional Refrigerators
+            </p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full pt-6 border-t border-slate-800 text-left">
+                <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                    <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Student 1</span>
+                    <span class="text-sm font-bold text-white">AI & Vision Lead</span>
+                </div>
+                <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                    <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Student 2</span>
+                    <span class="text-sm font-bold text-white">Hardware & Sensors</span>
+                </div>
+                <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                    <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Student 3</span>
+                    <span class="text-sm font-bold text-white">Backend & UI</span>
+                </div>
+                <div class="bg-indigo-950/40 p-3.5 rounded-xl border border-indigo-800/40">
+                    <span class="text-[11px] font-semibold text-indigo-300 uppercase tracking-wider block">Project Guide</span>
+                    <span class="text-sm font-bold text-indigo-200">Prof. [Guide Name]</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: THE PROBLEM -->
+        <div class="slide slide-anim flex-col space-y-6 w-full max-w-5xl" data-index="2">
+            <div>
+                <span class="text-xs font-mono font-semibold text-rose-400 uppercase tracking-wider">The Engineering Problem</span>
+                <h2 class="text-3xl font-bold text-white mt-1">Why Existing Smart Refrigerators Fail</h2>
+                <p class="text-sm text-slate-400 mt-1">Commercial solutions (Samsung Family Hub, LG InstaView) cost ₹1.5L – ₹3L and suffer from fatal blindspots.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-xl space-y-2">
+                    <div class="flex items-center space-x-2 text-rose-400 font-bold text-base">
+                        <i class="fa-solid fa-eye-slash"></i>
+                        <span>1. The Opaque Container Blindspot</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Optical cameras only see surface packaging. They detect a milk carton, but have <strong>zero physical capability</strong> to tell if it contains 1000 mL, 200 mL, or is empty.
+                    </p>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-xl space-y-2">
+                    <div class="flex items-center space-x-2 text-amber-400 font-bold text-base">
+                        <i class="fa-solid fa-chart-line-down"></i>
+                        <span>2. Piezoresistive Cold Drift</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        At 4°C, load cells experience metallic thermal drift of <strong>50g to 80g over hours</strong>, falsely triggering phantom consumption alerts on single scales.
+                    </p>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-xl space-y-2">
+                    <div class="flex items-center space-x-2 text-cyan-400 font-bold text-base">
+                        <i class="fa-solid fa-water"></i>
+                        <span>3. Tropical Optical Condensation</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Warm humid room air condenses instantly on cold camera lenses upon door opening, blurring all captured frames without active intervention.
+                    </p>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-xl space-y-2">
+                    <div class="flex items-center space-x-2 text-purple-400 font-bold text-base">
+                        <i class="fa-solid fa-calculator"></i>
+                        <span>4. Multi-Liquid Ambiguity</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        A single scale cannot mathematically isolate simultaneous usage across two bottles: $x + y = \Delta W$ has infinite mathematical solutions.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: OUR PROPOSED SOLUTION -->
+        <div class="slide slide-anim flex-col space-y-6 w-full max-w-5xl" data-index="3">
+            <div>
+                <span class="text-xs font-mono font-semibold text-emerald-400 uppercase tracking-wider">Proposed Architecture</span>
+                <h2 class="text-3xl font-bold text-white mt-1">The Dual-Zone Retrofit Smart Tray</h2>
+                <p class="text-sm text-slate-400 mt-1">A non-invasive, sub-₹2,000 modular system that turns any standard refrigerator into an intelligent inventory manager.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-xl flex flex-col justify-between">
+                    <div>
+                        <div class="p-3 bg-indigo-500/10 text-indigo-400 rounded-lg w-fit text-xl mb-3">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-1">Dual-Zone Split Platform</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Two mechanically separated cantilever plates on a shared base with a 2mm air gap. Measures Milk and Juice independently without crosstalk.
+                        </p>
+                    </div>
+                    <span class="text-[11px] font-mono text-indigo-400 mt-4 block">Independent Parallel Sampling</span>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-xl flex flex-col justify-between">
+                    <div>
+                        <div class="p-3 bg-cyan-500/10 text-cyan-400 rounded-lg w-fit text-xl mb-3">
+                            <i class="fa-solid fa-bolt-lightning"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-1">Enclosed Strobe Optical Pod</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Pulsed flash LED fires inside the dark, closed refrigerator. Zero shadows, glare-free exposure, and passive heat prevents lens condensation.
+                        </p>
+                    </div>
+                    <span class="text-[11px] font-mono text-cyan-400 mt-4 block">100ms Microsecond Strobe</span>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-xl flex flex-col justify-between">
+                    <div>
+                        <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-lg w-fit text-xl mb-3">
+                            <i class="fa-solid fa-laptop-code"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-1">Local Edge AI on Laptop</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Eliminates the ₹6,000 Raspberry Pi! Student laptop receives Wi-Fi telemetry, runs YOLOv8n in 150ms, and serves a live web dashboard.
+                        </p>
+                    </div>
+                    <span class="text-[11px] font-mono text-emerald-400 mt-4 block">100% Free & Open-Source</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: SENSORS MATRIX -->
+        <div class="slide slide-anim flex-col space-y-5 w-full max-w-5xl" data-index="4">
+            <div>
+                <span class="text-xs font-mono font-semibold text-indigo-400 uppercase tracking-wider">Hardware Component Breakdown</span>
+                <h2 class="text-3xl font-bold text-white mt-1">What Sensors We Use & What For</h2>
+            </div>
+            <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/80">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-slate-800/80 text-slate-300 font-mono text-[11px] border-b border-slate-700">
+                            <th class="p-3.5">Sensor / Module</th>
+                            <th class="p-3.5">Model / Specification</th>
+                            <th class="p-3.5">Physical Placement</th>
+                            <th class="p-3.5">Exact Engineering Function</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/80 text-slate-300">
+                        <tr>
+                            <td class="p-3.5 font-semibold text-white">Dual Load Cells</td>
+                            <td class="p-3.5 font-mono text-indigo-300">2x 5kg Straight-Bar (Alloy)</td>
+                            <td class="p-3.5">Under Zone 1 & Zone 2 Trays</td>
+                            <td class="p-3.5">Measures physical mass changes ($\pm 1\text{g}$) independently for Dairy vs. Beverages.</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3.5 font-semibold text-white">Dual 24-Bit ADCs</td>
+                            <td class="p-3.5 font-mono text-indigo-300">2x HX711 Modules</td>
+                            <td class="p-3.5">Shared Clock Bus on Base</td>
+                            <td class="p-3.5">Amplifies microvolt strain signals with 10-sample median filtering to eliminate vibration noise.</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3.5 font-semibold text-white">Door State Sensor</td>
+                            <td class="p-3.5 font-mono text-indigo-300">MC-38 Magnetic Reed Switch</td>
+                            <td class="p-3.5">Fridge Door Frame & Liner</td>
+                            <td class="p-3.5">Triggers pre-access baseline tare latch on open, and dampening settling window on close.</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3.5 font-semibold text-white">Optical Sensor</td>
+                            <td class="p-3.5 font-mono text-indigo-300">OV2640 2MP (ESP32-CAM)</td>
+                            <td class="p-3.5">Overhead Ceiling Pod (Suction)</td>
+                            <td class="p-3.5">Captures 120° wide-angle top-down frame for YOLOv8n object bounding-box tracking.</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3.5 font-semibold text-white">Active Flash Strobe</td>
+                            <td class="p-3.5 font-mono text-indigo-300">High-Power White SMD LED</td>
+                            <td class="p-3.5">Integrated on Camera Pod (GPIO 4)</td>
+                            <td class="p-3.5">Pulses for 100ms inside the closed darkroom fridge, guaranteeing glare-free uniform lighting.</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3.5 font-semibold text-white">Climate Sensor</td>
+                            <td class="p-3.5 font-mono text-indigo-300">DHT11 Digital Sensor</td>
+                            <td class="p-3.5">Interior Refrigerator Wall</td>
+                            <td class="p-3.5">Monitors internal temperature (0–50°C) and relative humidity for storage logging.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: ARCHITECTURE & DATA FLOW -->
+        <div class="slide slide-anim flex-col space-y-6 w-full max-w-5xl" data-index="5">
+            <div>
+                <span class="text-xs font-mono font-semibold text-cyan-400 uppercase tracking-wider">End-to-End Operation</span>
+                <h2 class="text-3xl font-bold text-white mt-1">System Architecture & Data Flow</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-2">
+                    <span class="px-2 py-0.5 bg-blue-500/20 text-blue-300 rounded font-mono font-bold">STEP 1</span>
+                    <h4 class="font-bold text-white text-sm">Door Opens</h4>
+                    <p class="text-slate-400 leading-relaxed">
+                        Reed switch separates. Interrupt fires on ESP32. Immediately latches baseline tare weights: $W_{0,\text{dairy}}$ and $W_{0,\text{drinks}}$.
+                    </p>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-2">
+                    <span class="px-2 py-0.5 bg-indigo-500/20 text-indigo-300 rounded font-mono font-bold">STEP 2</span>
+                    <h4 class="font-bold text-white text-sm">Door Closes</h4>
+                    <p class="text-slate-400 leading-relaxed">
+                        Reed switch closes. System enforces a strict <strong>1.2s damping delay</strong> to allow mechanical vibration and liquid sloshing to settle.
+                    </p>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-2">
+                    <span class="px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded font-mono font-bold">STEP 3</span>
+                    <h4 class="font-bold text-white text-sm">Flash & Dual Sample</h4>
+                    <p class="text-slate-400 leading-relaxed">
+                        Flash LED pulses in the dark. Camera snaps frame ($I_1$). Dual HX711s sample settled masses ($W_{1,\text{dairy}}, W_{1,\text{drinks}}$).
+                    </p>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-2">
+                    <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded font-mono font-bold">STEP 4</span>
+                    <h4 class="font-bold text-white text-sm">Laptop Inference & UI</h4>
+                    <p class="text-slate-400 leading-relaxed">
+                        Laptop runs YOLOv8n, computes remaining milliliters, updates SQLite, and pushes live updates to the web dashboard and Flutter mobile app in real time!
+                    </p>
+                </div>
+            </div>
+            <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono">
+                <span>Wi-Fi / Hotspot Telemetry: JSON Payload + Multipart JPEG</span>
+                <span class="text-emerald-400">Total Latency: &lt; 1.8 seconds post-closure</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: PATENTABLE INNOVATIONS -->
+        <div class="slide slide-anim flex-col space-y-6 w-full max-w-5xl" data-index="6">
+            <div>
+                <span class="text-xs font-mono font-semibold text-purple-400 uppercase tracking-wider">Intellectual Property & Novelty</span>
+                <h2 class="text-3xl font-bold text-white mt-1">The 4 Patentable Innovations</h2>
+                <p class="text-sm text-slate-400 mt-1">Crafted to strictly overcome Section 3(f) [Mere Aggregation] and Section 3(k) [Software per se] of the Indian Patents Act, 1970.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-indigo-300 text-sm">1. Dual-Zone Split Cantilever</span>
+                        <span class="font-mono text-slate-400">Claim 1 & 6</span>
+                    </div>
+                    <p class="text-slate-300 leading-relaxed">
+                        Two independent cantilever plates separated by a 2mm air gap. Eliminates multi-liquid ambiguity ($x + y = \Delta W$) with 100% mathematical determinism at ₹160 cost.
+                    </p>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-cyan-300 text-sm">2. Event-Gated Tare Latch</span>
+                        <span class="font-mono text-slate-400">Claim 2</span>
+                    </div>
+                    <p class="text-slate-300 leading-relaxed">
+                        Latching $W_0$ at door opening and subtracting it from $W_1$ post-closure cancels long-term piezoresistive thermal drift across the brief 10-second access window:
+                        $\Delta W = W_1 - W_0$.
+                    </p>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-emerald-300 text-sm">3. Passive Parasitic Anti-Fogging</span>
+                        <span class="font-mono text-slate-400">Claim 3</span>
+                    </div>
+                    <p class="text-slate-300 leading-relaxed">
+                        Standby thermal dissipation (0.26W) from the ESP32 processor is heatsunk to the optical aperture window, keeping it above the dew-point with <strong>zero active heating elements</strong>!
+                    </p>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-amber-300 text-sm">4. Opaque Liquid Quantification</span>
+                        <span class="font-mono text-slate-400">Claim 4 & 5</span>
+                    </div>
+                    <p class="text-slate-300 leading-relaxed">
+                        Couples bounding-box visual persistence with load cell mass delta ($\Delta W < 0$) to compute remaining fluid volume without requiring internal immersion probes.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: MULTI-LIQUID DISAMBIGUATION -->
+        <div class="slide slide-anim flex-col space-y-6 w-full max-w-5xl" data-index="7">
+            <div>
+                <span class="text-xs font-mono font-semibold text-amber-400 uppercase tracking-wider">Live Demo Hero Feature</span>
+                <h2 class="text-3xl font-bold text-white mt-1">Multi-Liquid Disambiguation (Dual-Zone)</h2>
+                <p class="text-sm text-slate-400 mt-1">How we prove to the faculty panel that our system handles simultaneous liquid usage without guesswork.</p>
+            </div>
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-950 p-4 rounded-xl border border-blue-500/30 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-blue-400 text-sm">ZONE 1: DAIRY TRAY</span>
+                            <span class="text-xs text-slate-400 font-mono">Load Cell #1</span>
+                        </div>
+                        <div class="text-2xl font-black text-white">Milk Bottle (1L)</div>
+                        <div class="text-xs text-slate-300">
+                            User pours 250 mL $\rightarrow$ Scale 1 records: $\Delta W_1 = -250\text{g}$.
+                        </div>
+                        <div class="text-xs font-mono text-blue-400">
+                            Fill Level: Drops 100% $\to$ 75% (750 mL remaining)
+                        </div>
+                    </div>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-amber-500/30 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-amber-400 text-sm">ZONE 2: DRINKS TRAY</span>
+                            <span class="text-xs text-slate-400 font-mono">Load Cell #2</span>
+                        </div>
+                        <div class="text-2xl font-black text-white">Orange Juice (500ml)</div>
+                        <div class="text-xs text-slate-300">
+                            User pours 100 mL $\rightarrow$ Scale 2 records: $\Delta W_2 = -100\text{g}$.
+                        </div>
+                        <div class="text-xs font-mono text-amber-400">
+                            Fill Level: Drops 100% $\to$ 80% (400 mL remaining)
+                        </div>
+                    </div>
+                </div>
+                <div class="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-300 flex items-center space-x-2">
+                    <i class="fa-solid fa-check-double text-emerald-400"></i>
+                    <span><strong>100% Deterministic:</strong> Both liquids can be consumed in the exact same 10-second opening. Zero mathematical ambiguity!</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: BILL OF MATERIALS -->
+        <div class="slide slide-anim flex-col space-y-5 w-full max-w-5xl" data-index="8">
+            <div>
+                <span class="text-xs font-mono font-semibold text-emerald-400 uppercase tracking-wider">Feasibility & Sourcing</span>
+                <h2 class="text-3xl font-bold text-white mt-1">Hardware Bill of Materials (Strictly Under ₹2,000)</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl space-y-2 text-xs">
+                    <div class="flex justify-between pb-2 border-b border-slate-800">
+                        <span class="text-slate-300">ESP32-CAM (AI-Thinker OV2640)</span>
+                        <span class="font-mono font-bold text-white">₹540</span>
+                    </div>
+                    <div class="flex justify-between pb-2 border-b border-slate-800">
+                        <span class="text-slate-300">ESP32 NodeMCU (30-Pin)</span>
+                        <span class="font-mono font-bold text-white">₹290</span>
+                    </div>
+                    <div class="flex justify-between pb-2 border-b border-slate-800">
+                        <span class="text-slate-300">2x 5kg Straight-Bar Load Cells</span>
+                        <span class="font-mono font-bold text-white">₹320</span>
+                    </div>
+                    <div class="flex justify-between pb-2 border-b border-slate-800">
+                        <span class="text-slate-300">2x HX711 24-Bit ADC Modules</span>
+                        <span class="font-mono font-bold text-white">₹140</span>
+                    </div>
+                    <div class="flex justify-between pb-2 border-b border-slate-800">
+                        <span class="text-slate-300">MC-38 Magnetic Door Reed Switch</span>
+                        <span class="font-mono font-bold text-white">₹85</span>
+                    </div>
+                    <div class="flex justify-between pb-2 border-b border-slate-800">
+                        <span class="text-slate-300">DHT11 Temperature & Humidity Sensor</span>
+                        <span class="font-mono font-bold text-white">₹90</span>
+                    </div>
+                    <div class="flex justify-between pb-2 border-b border-slate-800">
+                        <span class="text-slate-300">3mm Acrylic Plates (1 Base, 2 Trays)</span>
+                        <span class="font-mono font-bold text-white">₹220</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-300">FTDI Programmer + Hardware Fasteners</span>
+                        <span class="font-mono font-bold text-white">₹260</span>
+                    </div>
+                </div>
+                <div class="bg-indigo-950/40 border border-indigo-500/30 p-6 rounded-xl flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs text-indigo-300 uppercase font-semibold">Total Estimated Cost</span>
+                        <div class="text-4xl font-black text-white mt-1">₹1,945 <span class="text-sm font-normal text-indigo-300">INR</span></div>
+                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                            Leaves over <strong>₹1,050 buffer</strong> within the ₹3,000 project ceiling. Compute overhead is ₹0 as it leverages student laptops over local Wi-Fi.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-indigo-500/20 text-xs text-indigo-300">
+                        <i class="fa-solid fa-cart-flatbed mr-1"></i> Sourced locally from Robu.in & local acrylic shops
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: LIVE DEMO SCRIPT -->
+        <div class="slide slide-anim flex-col space-y-6 w-full max-w-5xl" data-index="9">
+            <div>
+                <span class="text-xs font-mono font-semibold text-emerald-400 uppercase tracking-wider">Demonstration Protocol</span>
+                <h2 class="text-3xl font-bold text-white mt-1">The 5-Minute Faculty Live Demo Plan</h2>
+                <p class="text-sm text-slate-400 mt-1">Engineered to demonstrate every core feature without live failure modes.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 text-xs">
+                <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-800 space-y-1">
+                    <span class="text-[10px] font-mono text-slate-400 font-bold">MIN 1</span>
+                    <h5 class="font-bold text-white">Baseline Zero</h5>
+                    <p class="text-slate-400 text-[11px]">Show tray at 0g, door CLOSED, temp 4.1°C.</p>
+                </div>
+                <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-800 space-y-1">
+                    <span class="text-[10px] font-mono text-slate-400 font-bold">MIN 2</span>
+                    <h5 class="font-bold text-white">Add Milk</h5>
+                    <p class="text-slate-400 text-[11px]">Add 1L Milk to Zone 1 $\rightarrow$ Shows 100% (1000 mL).</p>
+                </div>
+                <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-800 space-y-1">
+                    <span class="text-[10px] font-mono text-slate-400 font-bold">MIN 3</span>
+                    <h5 class="font-bold text-white">Add Juice</h5>
+                    <p class="text-slate-400 text-[11px]">Add 500mL Juice to Zone 2 $\rightarrow$ Shows 100% (500 mL).</p>
+                </div>
+                <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-800 space-y-1">
+                    <span class="text-[10px] font-mono text-slate-400 font-bold">MIN 4</span>
+                    <h5 class="font-bold text-white">Pour Both!</h5>
+                    <p class="text-slate-400 text-[11px]">Pour from both $\rightarrow$ Milk: 75%, Juice: 80% independently!</p>
+                </div>
+                <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-800 space-y-1">
+                    <span class="text-[10px] font-mono text-slate-400 font-bold">MIN 5</span>
+                    <h5 class="font-bold text-white">Low-Stock Alert</h5>
+                    <p class="text-slate-400 text-[11px]">Milk &lt; 20% $\rightarrow$ Auto-added to Smart Shopping List.</p>
+                </div>
+            </div>
+            <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-xs text-slate-300">
+                <i class="fa-solid fa-code text-indigo-400 mr-1.5"></i> Working software already built with Python Flask + SQLite + Tailwind UI (`http://localhost:5000`).
+            </div>
+        </div>
+
+        <!-- SLIDE 10: DELIVERABLES & CONCLUSION -->
+        <div class="slide slide-anim flex-col items-center justify-center text-center space-y-6 max-w-4xl" data-index="10">
+            <div class="p-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full text-2xl">
+                <i class="fa-solid fa-certificate"></i>
+            </div>
+            <h2 class="text-3xl md:text-4xl font-black text-white">Review 1 Milestones Completed</h2>
+            <p class="text-sm text-slate-400 max-w-2xl">
+                We have moved beyond a concept: our mechanical blueprints, 3-pin wiring schematics, working Flask backend, and formal Form 2 patent specification are complete.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full text-left text-xs pt-4">
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                    <span class="text-indigo-400 font-bold block mb-1">1. Working Software</span>
+                    <p class="text-slate-400">Server, database, YOLO engine, and web dashboard tested and operational.</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                    <span class="text-cyan-400 font-bold block mb-1">2. Hardware Plan</span>
+                    <p class="text-slate-400">₹1,945 BOM, 3-pin dual-scale interface, 3-week execution schedule.</p>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
+                    <span class="text-purple-400 font-bold block mb-1">3. Patent Document</span>
+                    <p class="text-slate-400">Form 2 Complete Specification with 8 statutory claims prepared for IPR Cell.</p>
+                </div>
+            </div>
+            <div class="pt-4 text-xs font-mono text-slate-500">
+                Ready for Fabrication & Provisional Application Filing • Thank You!
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation Controls -->
+    <footer class="px-8 py-4 border-t border-slate-800/80 bg-slate-900/50 backdrop-blur flex justify-between items-center z-50">
+        <div class="text-xs text-slate-500 font-mono hidden sm:block">
+            Use <kbd class="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-700">←</kbd> and <kbd class="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-700">→</kbd> arrow keys to navigate
+        </div>
+        <div class="flex items-center space-x-3 mx-auto sm:mx-0">
+            <button id="prevBtn" onclick="changeSlide(-1)" class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition">
+                <i class="fa-solid fa-arrow-left mr-1"></i> Previous
+            </button>
+            <button id="nextBtn" onclick="changeSlide(1)" class="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-xs font-medium text-white transition shadow shadow-indigo-600/30">
+                Next <i class="fa-solid fa-arrow-right ml-1"></i>
+            </button>
+        </div>
+    </footer>
+
+    <!-- Interactive Navigation Script -->
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 10;
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+                if (parseInt(slide.getAttribute('data-index')) === index) {
+                    slide.classList.add('active');
+                }
+            });
+
+            document.getElementById('slideIndicator').textContent = `Slide ${index} of ${totalSlides}`;
+            document.getElementById('prevBtn').disabled = (index === 1);
+            document.getElementById('prevBtn').classList.toggle('opacity-50', index === 1);
+            document.getElementById('nextBtn').textContent = (index === totalSlides) ? 'Finish' : 'Next';
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 1) currentSlide = 1;
+            if (currentSlide > totalSlides) currentSlide = totalSlides;
+            showSlide(currentSlide);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                changeSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                changeSlide(-1);
+            } else if (e.key === 'f' || e.key === 'F') {
+                toggleFullscreen();
+            }
+        });
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+
+        showSlide(1);
+    </script>
+</body>
+</html>

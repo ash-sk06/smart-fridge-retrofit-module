@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Smart Fridge Retrofit | Dual-Zone Dashboard</title>
+    <!-- Mobile App (PWA) Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SmartFridge">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3757/3757876.png">
+    <!-- Tailwind CSS CDN for instant modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+
+    <!-- Top Navigation & Telemetry Banner -->
+    <header class="bg-slate-800/80 backdrop-blur border-b border-slate-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="p-2 bg-indigo-600 rounded-lg text-white shadow-lg shadow-indigo-500/30">
+                    <i class="fa-solid fa-snowflake text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-wide text-white">Smart Fridge Retrofit</h1>
+                    <p class="text-xs text-indigo-300 font-medium">Dual-Zone Visual-Gravimetric Inventory Module</p>
+                </div>
+            </div>
+
+            <!-- Environmental Micro-Climate Telemetry -->
+            <div class="flex items-center space-x-4 bg-slate-900/60 border border-slate-700/60 px-4 py-1.5 rounded-full text-xs font-mono">
+                <div class="flex items-center space-x-1.5">
+                    <span id="doorBadge" class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-slate-400">DOOR:</span>
+                    <span id="doorText" class="font-bold text-white">CLOSED</span>
+                </div>
+                <div class="h-3 w-px bg-slate-700"></div>
+                <div class="flex items-center space-x-1.5">
+                    <i class="fa-solid fa-temperature-half text-cyan-400"></i>
+                    <span class="text-slate-400">TEMP:</span>
+                    <span id="tempText" class="font-bold text-cyan-300">4.1 °C</span>
+                </div>
+                <div class="h-3 w-px bg-slate-700"></div>
+                <div class="flex items-center space-x-1.5">
+                    <i class="fa-solid fa-droplet text-blue-400"></i>
+                    <span class="text-slate-400">RH:</span>
+                    <span id="humidityText" class="font-bold text-blue-300">65%</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- Quick Demo & Simulation Controls (Useful for Faculty Vivas!) -->
+        <div class="bg-indigo-950/40 border border-indigo-500/30 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 shadow-inner">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-flask text-indigo-400"></i>
+                <span class="text-sm font-semibold text-indigo-200">Interactive Demo Simulator:</span>
+                <span class="text-xs text-indigo-300 hidden sm:inline">(Test dashboard without physical sensors)</span>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <button onclick="simulate('drink_milk')" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-xs font-medium transition shadow">
+                    <i class="fa-solid fa-mug-hot mr-1"></i> Pour Milk (-250ml)
+                </button>
+                <button onclick="simulate('drink_both')" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs font-medium transition shadow">
+                    <i class="fa-solid fa-champagne-glasses mr-1"></i> Pour Both (-250ml & -100ml)
+                </button>
+                <button onclick="simulate('low_stock_milk')" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded text-xs font-medium transition shadow">
+                    <i class="fa-solid fa-triangle-exclamation mr-1"></i> Trigger Low Stock (&lt;20%)
+                </button>
+                <button onclick="simulate('reset_full')" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded text-xs font-medium transition">
+                    <i class="fa-solid fa-rotate-left mr-1"></i> Reset 100%
+                </button>
+            </div>
+        </div>
+
+        <!-- Dual-Zone Smart Tray Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- ZONE 1: DAIRY (MILK) -->
+            <div class="bg-slate-800/90 border border-slate-700/80 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 px-4 py-1.5 bg-indigo-500/20 text-indigo-300 font-mono text-xs font-bold rounded-bl-xl border-l border-b border-indigo-500/30">
+                    ZONE 1 • CANTILEVER #1
+                </div>
+
+                <div class="flex items-start space-x-4">
+                    <div class="p-4 bg-blue-500/10 border border-blue-500/30 rounded-xl text-blue-400 text-2xl">
+                        <i class="fa-solid fa-bottle-droplet"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-semibold tracking-wider text-blue-400 uppercase">Dairy Section</span>
+                        <h2 id="z1_name" class="text-xl font-bold text-white">Pasteurized Whole Milk</h2>
+                        <p class="text-xs text-slate-400">Container Tare: 45g | Nominal Full: 1000 mL</p>
+                    </div>
+                </div>
+
+                <!-- Fill Level & Gauge -->
+                <div class="mt-6 space-y-2">
+                    <div class="flex justify-between items-baseline">
+                        <span class="text-xs text-slate-400 font-medium">Estimated Fluid Quantity:</span>
+                        <span id="z1_volume" class="text-2xl font-black text-blue-400">1000 <span class="text-sm font-normal text-slate-300">mL</span></span>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-slate-700/60 rounded-full h-3.5 overflow-hidden p-0.5 border border-slate-600/50">
+                        <div id="z1_bar" class="bg-gradient-to-r from-blue-500 to-cyan-400 h-full rounded-full transition-all duration-700" style="width: 100%"></div>
+                    </div>
+
+                    <div class="flex justify-between text-xs text-slate-400 pt-1 font-mono">
+                        <span id="z1_pct">100.0% Remaining</span>
+                        <span id="z1_weight">Gross: 1045.0 g</span>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-slate-700/60 flex items-center justify-between text-xs">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-slate-400">Inventory Status:</span>
+                        <span id="z1_status_badge" class="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-full font-semibold">OPTIMAL</span>
+                    </div>
+                    <span id="z1_delta_tag" class="text-slate-400 font-mono">Δ 0.0 g</span>
+                </div>
+            </div>
+
+            <!-- ZONE 2: BEVERAGES (JUICE) -->
+            <div class="bg-slate-800/90 border border-slate-700/80 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 px-4 py-1.5 bg-amber-500/20 text-amber-300 font-mono text-xs font-bold rounded-bl-xl border-l border-b border-amber-500/30">
+                    ZONE 2 • CANTILEVER #2
+                </div>
+
+                <div class="flex items-start space-x-4">
+                    <div class="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-400 text-2xl">
+                        <i class="fa-solid fa-glass-water"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-semibold tracking-wider text-amber-400 uppercase">Beverage Section</span>
+                        <h2 id="z2_name" class="text-xl font-bold text-white">Fresh Orange Juice</h2>
+                        <p class="text-xs text-slate-400">Container Tare: 30g | Nominal Full: 500 mL</p>
+                    </div>
+                </div>
+
+                <!-- Fill Level & Gauge -->
+                <div class="mt-6 space-y-2">
+                    <div class="flex justify-between items-baseline">
+                        <span class="text-xs text-slate-400 font-medium">Estimated Fluid Quantity:</span>
+                        <span id="z2_volume" class="text-2xl font-black text-amber-400">500 <span class="text-sm font-normal text-slate-300">mL</span></span>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-slate-700/60 rounded-full h-3.5 overflow-hidden p-0.5 border border-slate-600/50">
+                        <div id="z2_bar" class="bg-gradient-to-r from-amber-500 to-orange-400 h-full rounded-full transition-all duration-700" style="width: 100%"></div>
+                    </div>
+
+                    <div class="flex justify-between text-xs text-slate-400 pt-1 font-mono">
+                        <span id="z2_pct">100.0% Remaining</span>
+                        <span id="z2_weight">Gross: 530.0 g</span>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-slate-700/60 flex items-center justify-between text-xs">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-slate-400">Inventory Status:</span>
+                        <span id="z2_status_badge" class="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-full font-semibold">OPTIMAL</span>
+                    </div>
+                    <span id="z2_delta_tag" class="text-slate-400 font-mono">Δ 0.0 g</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Lower Grid: Automated Shopping List & Vision Viewport -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Automated Shopping List -->
+            <div class="bg-slate-800/90 border border-slate-700/80 rounded-2xl p-6 shadow-xl lg:col-span-1">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-cart-shopping text-rose-400"></i>
+                        <h3 class="font-bold text-white text-base">Smart Shopping List</h3>
+                    </div>
+                    <span id="shopping_count" class="px-2 py-0.5 bg-rose-500/20 text-rose-300 text-xs font-bold rounded-full">0 Items</span>
+                </div>
+
+                <p class="text-xs text-slate-400 mb-3">Items are auto-added when container fill drops below 20%.</p>
+
+                <ul id="shopping_items" class="space-y-2 text-xs">
+                    <li class="p-3 rounded-lg bg-slate-900/60 border border-slate-700/50 text-slate-400 text-center italic">
+                        All stocks optimal. No items to replenish!
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Overhead Vision & AI Inference Viewport -->
+            <div class="bg-slate-800/90 border border-slate-700/80 rounded-2xl p-6 shadow-xl lg:col-span-2">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-eye text-cyan-400"></i>
+                        <h3 class="font-bold text-white text-base">Overhead Vision & AI Inference</h3>
+                    </div>
+                    <span class="text-xs font-mono text-cyan-300 bg-cyan-950/60 px-2.5 py-1 rounded border border-cyan-800">YOLOv8n Active</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                    <div class="rounded-xl border border-slate-700 bg-slate-950 aspect-video flex items-center justify-center overflow-hidden">
+                        <img id="camera_feed" src="/static/latest_capture.jpg" onerror="this.src='https://placehold.co/640x480/1e293b/94a3b8?text=Enclosed+Flash+Capture';" class="w-full h-full object-cover">
+                    </div>
+                    <div class="space-y-3 text-xs">
+                        <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700">
+                            <span class="text-slate-400 font-semibold block mb-1">Detected Object Classes:</span>
+                            <ul id="detected_list" class="space-y-1 font-mono text-indigo-300">
+                                <li>• bottle in Zone 1 (Dairy)</li>
+                                <li>• bottle in Zone 2 (Drinks)</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700 text-slate-400 space-y-1">
+                            <div><strong class="text-slate-300">Optics:</strong> Sealed Anti-Condensation Pod</div>
+                            <div><strong class="text-slate-300">Illumination:</strong> 350 Lux Microsecond Flash Strobe</div>
+                            <div><strong class="text-slate-300">Exposure:</strong> Sealed Refrigerator Darkroom</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Client-Side Polling Script -->
+    <script>
+        async function fetchDashboard() {
+            try {
+                const response = await fetch('/api/inventory');
+                const data = await response.json();
+                if (data.status === 'success') {
+                    updateUI(data);
+                }
+            } catch (err) {
+                console.warn("Polling error:", err);
+            }
+        }
+
+        function updateUI(data) {
+            const z1 = data.inventory.zone1;
+            const z2 = data.inventory.zone2;
+            const tel = data.telemetry;
+
+            // Update Telemetry Header
+            document.getElementById('doorText').textContent = tel.door_state;
+            document.getElementById('doorBadge').className = tel.door_state === 'OPEN' 
+                ? 'inline-block w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping' 
+                : 'inline-block w-2.5 h-2.5 rounded-full bg-emerald-500';
+            document.getElementById('tempText').textContent = `${tel.temperature_c.toFixed(1)} °C`;
+            document.getElementById('humidityText').textContent = `${tel.humidity_pct}%`;
+
+            // Update Zone 1 (Milk)
+            if (z1) {
+                document.getElementById('z1_name').textContent = z1.item_name;
+                document.getElementById('z1_volume').innerHTML = `${z1.remaining_volume} <span class="text-sm font-normal text-slate-300">mL</span>`;
+                document.getElementById('z1_bar').style.width = `${z1.fill_percentage}%`;
+                document.getElementById('z1_pct').textContent = `${z1.fill_percentage.toFixed(1)}% Remaining`;
+                document.getElementById('z1_weight').textContent = `Gross: ${z1.current_weight.toFixed(1)} g`;
+                document.getElementById('z1_delta_tag').textContent = `Δ ${tel.last_delta_dairy.toFixed(1)} g`;
+
+                const badge1 = document.getElementById('z1_status_badge');
+                badge1.textContent = z1.status;
+                badge1.className = z1.status === 'LOW_STOCK'
+                    ? 'px-2.5 py-0.5 bg-rose-500/20 text-rose-300 border border-rose-500/40 rounded-full font-semibold animate-pulse'
+                    : 'px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-full font-semibold';
+            }
+
+            // Update Zone 2 (Juice)
+            if (z2) {
+                document.getElementById('z2_name').textContent = z2.item_name;
+                document.getElementById('z2_volume').innerHTML = `${z2.remaining_volume} <span class="text-sm font-normal text-slate-300">mL</span>`;
+                document.getElementById('z2_bar').style.width = `${z2.fill_percentage}%`;
+                document.getElementById('z2_pct').textContent = `${z2.fill_percentage.toFixed(1)}% Remaining`;
+                document.getElementById('z2_weight').textContent = `Gross: ${z2.current_weight.toFixed(1)} g`;
+                document.getElementById('z2_delta_tag').textContent = `Δ ${tel.last_delta_drinks.toFixed(1)} g`;
+
+                const badge2 = document.getElementById('z2_status_badge');
+                badge2.textContent = z2.status;
+                badge2.className = z2.status === 'LOW_STOCK'
+                    ? 'px-2.5 py-0.5 bg-rose-500/20 text-rose-300 border border-rose-500/40 rounded-full font-semibold animate-pulse'
+                    : 'px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-full font-semibold';
+            }
+
+            // Update Shopping List
+            const shoppingUl = document.getElementById('shopping_items');
+            const shoppingCount = document.getElementById('shopping_count');
+            if (data.shopping_list && data.shopping_list.length > 0) {
+                shoppingCount.textContent = `${data.shopping_list.length} Items`;
+                shoppingUl.innerHTML = data.shopping_list.map(item => `
+                    <li class="p-2.5 rounded-lg bg-rose-950/40 border border-rose-500/30 flex items-center justify-between">
+                        <span class="font-medium text-rose-200"><i class="fa-solid fa-circle-exclamation mr-1.5 text-rose-400"></i> ${item.item_name}</span>
+                        <span class="text-[10px] text-rose-300 bg-rose-900/60 px-2 py-0.5 rounded font-mono">${item.reason}</span>
+                    </li>
+                `).join('');
+            } else {
+                shoppingCount.textContent = '0 Items';
+                shoppingUl.innerHTML = '<li class="p-3 rounded-lg bg-slate-900/60 border border-slate-700/50 text-slate-400 text-center italic">All stocks optimal. No items to replenish!</li>';
+            }
+        }
+
+        async function simulate(action) {
+            await fetch('/api/test-simulate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({action})
+            });
+            fetchDashboard();
+        }
+
+        // Poll every 1.5 seconds for instant real-time responsiveness
+        setInterval(fetchDashboard, 1500);
+        fetchDashboard();
+    </script>
+</body>
+</html>

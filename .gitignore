@@ -1,0 +1,56 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+dist/
+venv/
+software/venv/
+ENV/
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+software/fridge_inventory.db
+
+# Flutter / Dart
+**/build/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.pub-cache/
+**/.pub/
+**/coverage/
+app.*.symbols
+app.*.map.json
+**/android/app/debug
+**/android/app/profile
+**/android/app/release
+.widget_preview/
+
+# Android / Gradle
+**/.gradle/
+**/local.properties
+**/GeneratedPluginRegistrant.java
+
+# IDEs and Editors
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+*.swo
+
+# Miscellaneous
+.Rhistory
+*.log
