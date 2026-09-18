@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review II: AI Refrigerator Retrofit Module</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .slide { display: none; }
+        .slide.active { display: flex; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .slide-anim { animation: fadeIn 0.25s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between select-none font-sans overflow-hidden">
+
+    <!-- Top Navigation Header -->
+    <header class="px-8 py-3.5 border-b border-slate-800/90 flex justify-between items-center bg-slate-900/60 backdrop-blur z-50">
+        <div class="flex items-center space-x-3">
+            <span class="px-2.5 py-1 bg-indigo-600 rounded text-white text-xs font-black tracking-wider uppercase">Review II</span>
+            <span class="text-sm font-semibold tracking-wide text-slate-300">Smart Fridge Retrofit Module • Multi-Sensor Fusion</span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span id="slideIndicator" class="text-xs font-mono font-bold text-indigo-400 bg-indigo-950/70 px-3.5 py-1.5 rounded-full border border-indigo-800/60">Slide 1 of 8</span>
+            <button onclick="toggleFullscreen()" title="Toggle Fullscreen" class="text-slate-400 hover:text-white text-sm p-1">
+                <i class="fa-solid fa-expand"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Slide Canvas -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-6 py-6 flex items-center justify-center">
+
+        <!-- SLIDE 1: TITLE SLIDE -->
+        <div class="slide active slide-anim flex-col items-center justify-center text-center space-y-6 max-w-4xl" data-index="1">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-mono font-semibold">
+                <i class="fa-solid fa-microchip text-indigo-400"></i>
+                <span>Review II (20 Marks) • Engineering Capstone Design Project</span>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-black tracking-tight text-white leading-tight">
+                AI Refrigerator Retrofit Module Using Multi-Sensor Fusion for Food Inventory Management
+            </h1>
+            <p class="text-base md:text-lg text-slate-400 max-w-2xl mx-auto">
+                A non-invasive, low-cost (₹2,000–₹3,000) IoT upgrade package enabling real-time opaque liquid level tracking, shelf telemetry, and automated inventory management.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full pt-4 border-t border-slate-800 text-left">
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                    <span class="text-[11px] font-semibold text-indigo-400 uppercase tracking-wider block">Presented By</span>
+                    <span class="text-sm font-bold text-white block mt-0.5">[Student Name / Team]</span>
+                    <span class="text-xs text-slate-400">Roll / Reg. No: [Your Register No.]</span>
+                </div>
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                    <span class="text-[11px] font-semibold text-emerald-400 uppercase tracking-wider block">Under the Guidance of</span>
+                    <span class="text-sm font-bold text-white block mt-0.5">Prof. [Guide Name]</span>
+                    <span class="text-xs text-slate-400">[Designation / Department]</span>
+                </div>
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                    <span class="text-[11px] font-semibold text-purple-400 uppercase tracking-wider block">Academic Context</span>
+                    <span class="text-sm font-bold text-white block mt-0.5">Department of [Your Dept]</span>
+                    <span class="text-xs text-slate-400">[Your College / University Name]</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: AGENDA -->
+        <div class="slide slide-anim flex-col space-y-6 w-full max-w-4xl" data-index="2">
+            <div class="border-b border-slate-800 pb-3">
+                <span class="text-xs font-mono text-indigo-400 uppercase font-bold tracking-wider">Navigation</span>
+                <h2 class="text-3xl font-extrabold text-white">Presentation Agenda</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex items-start space-x-3.5 p-4 rounded-xl bg-slate-900/70 border border-slate-800">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center font-mono font-bold text-indigo-400 text-sm">01</div>
+                    <div>
+                        <h4 class="text-base font-bold text-white">Introduction & Problem Understanding</h4>
+                        <p class="text-xs text-slate-400 mt-0.5">The food waste crisis and limitations of existing smart refrigerators.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3.5 p-4 rounded-xl bg-slate-900/70 border border-slate-800">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center font-mono font-bold text-indigo-400 text-sm">02</div>
+                    <div>
+                        <h4 class="text-base font-bold text-white">Literature Survey</h4>
+                        <p class="text-xs text-slate-400 mt-0.5">Critical review of industry patents (Samsung, LG) & academic systems.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3.5 p-4 rounded-xl bg-slate-900/70 border border-slate-800">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center font-mono font-bold text-indigo-400 text-sm">03</div>
+                    <div>
+                        <h4 class="text-base font-bold text-white">Challenges & Research Gap</h4>
+                        <p class="text-xs text-slate-400 mt-0.5">The 4 core bottlenecks: Opaque containers, sensor drift, fogging, and cost.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3.5 p-4 rounded-xl bg-slate-900/70 border border-slate-800">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center font-mono font-bold text-indigo-400 text-sm">04</div>
+                    <div>
+                        <h4 class="text-base font-bold text-white">Project Objectives</h4>
+                        <p class="text-xs text-slate-400 mt-0.5">Quantifiable targets: Sub-₹3,000 cost, multi-sensor fusion, edge inference.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3.5 p-4 rounded-xl bg-slate-900/70 border border-slate-800">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center font-mono font-bold text-indigo-400 text-sm">05</div>
+                    <div>
+                        <h4 class="text-base font-bold text-white">Proposed Methodology & Architecture</h4>
+                        <p class="text-xs text-slate-400 mt-0.5">Event-gated edge fusion, dual-zone cantilevers, and REST data pipelines.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3.5 p-4 rounded-xl bg-slate-900/70 border border-slate-800">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center font-mono font-bold text-emerald-400 text-sm">06</div>
+                    <div>
+                        <h4 class="text-base font-bold text-white">Results & Initial Implementation</h4>
+                        <p class="text-xs text-slate-400 mt-0.5">Working Flask server, live Web Dashboard, Flutter app, and 3D CAD models.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: INTRODUCTION -->
+        <div class="slide slide-anim flex-col space-y-6 w-full max-w-4xl" data-index="3">
+            <div class="border-b border-slate-800 pb-3">
+                <span class="text-xs font-mono text-indigo-400 uppercase font-bold tracking-wider">Context & Motivation</span>
+                <h2 class="text-3xl font-extrabold text-white">Introduction</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <div class="w-9 h-9 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white">The Food Waste Crisis</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Domestic households discard <strong>15–20% of edible groceries</strong> annually due to expiration and lack of visibility into opaque containers (milk, juices, condiments).
+                    </p>
+                </div>
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <div class="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-tags"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white">Cost & Adoption Barrier</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Commercial smart refrigerators (Samsung Family Hub, LG InstaView) cost <strong>₹1,50,000 to ₹3,00,000</strong>, completely locking out 95% of existing refrigerator owners.
+                    </p>
+                </div>
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <div class="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-puzzle-piece"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white">The Retrofit Paradigm</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        A non-invasive <strong>plug-and-play module</strong> for existing refrigerators priced under <strong>₹3,000 INR</strong>, democratizing food inventory management and reducing spoilage.
+                    </p>
+                </div>
+            </div>
+            <div class="p-3.5 bg-indigo-950/30 border border-indigo-800/40 rounded-xl flex items-center space-x-3">
+                <i class="fa-solid fa-circle-info text-indigo-400 text-base"></i>
+                <p class="text-xs text-slate-300">
+                    <strong>Core Proposition:</strong> Upgrade any standard single or double-door domestic refrigerator without drilling, wiring cuts, or voiding manufacturer warranty.
+                </p>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: LITERATURE SURVEY -->
+        <div class="slide slide-anim flex-col space-y-5 w-full max-w-4xl" data-index="4">
+            <div class="border-b border-slate-800 pb-3">
+                <span class="text-xs font-mono text-indigo-400 uppercase font-bold tracking-wider">State of the Art</span>
+                <h2 class="text-3xl font-extrabold text-white">Literature Survey</h2>
+            </div>
+            <div class="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/70">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-800/80 text-slate-300 uppercase font-mono text-[10px] tracking-wider border-b border-slate-700">
+                        <tr>
+                            <th class="p-3">Reference / Prior Art</th>
+                            <th class="p-3">Methodology</th>
+                            <th class="p-3">Strengths</th>
+                            <th class="p-3 text-rose-400">Critical Limitations</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800 text-slate-300">
+                        <tr>
+                            <td class="p-3 font-semibold text-white">Samsung Electronics<br><span class="text-[10px] text-slate-400 font-mono">US Patent 9,142,116 B2</span></td>
+                            <td class="p-3">Integrated wide-angle door/ceiling cameras.</td>
+                            <td class="p-3">High-resolution visual surface logging.</td>
+                            <td class="p-3 text-rose-300">Factory-built only (₹2L+); cannot measure fluid in opaque containers.</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-semibold text-white">Smarter Applications<br><span class="text-[10px] text-slate-400 font-mono">GB Patent 2,543,977 A</span></td>
+                            <td class="p-3">Door-mounted retrofit camera with accelerometer.</td>
+                            <td class="p-3">Non-invasive retrofit form factor.</td>
+                            <td class="p-3 text-rose-300">Zero gravimetric sensing; severe lens fogging upon door opening.</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-semibold text-white">LG Electronics<br><span class="text-[10px] text-slate-400 font-mono">US 2016/0153701 A1</span></td>
+                            <td class="p-3">Camera module with active electric heating coil.</td>
+                            <td class="p-3">Prevents lens condensation.</td>
+                            <td class="p-3 text-rose-300">Continuous resistive heat load inside fridge; high battery drain.</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-semibold text-white">IEEE Academic Systems<br><span class="text-[10px] text-slate-400 font-mono">Gupta et al. (2022)</span></td>
+                            <td class="p-3">Single load cell shelf with continuous sampling.</td>
+                            <td class="p-3">Quantifies total shelf mass changes.</td>
+                            <td class="p-3 text-rose-300">Severe 4°C piezoresistive cold drift (±60g); cannot resolve multi-item usage.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-[11px] text-slate-400 italic">
+                *Synthesis: No existing commercial or academic system simultaneously solves opaque fluid tracking, thermal drift, and lens fogging within an affordable retrofit envelope.
+            </p>
+        </div>
+
+        <!-- SLIDE 5: CHALLENGES & RESEARCH GAP -->
+        <div class="slide slide-anim flex-col space-y-6 w-full max-w-4xl" data-index="5">
+            <div class="border-b border-slate-800 pb-3">
+                <span class="text-xs font-mono text-rose-400 uppercase font-bold tracking-wider">Unsolved Engineering Problems</span>
+                <h2 class="text-3xl font-extrabold text-white">Challenges & Research Gap</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1.5">
+                    <div class="flex items-center space-x-2 text-rose-400 text-sm font-bold">
+                        <i class="fa-solid fa-eye-slash"></i>
+                        <span>1. The "Opaque Container" Blindspot</span>
+                    </div>
+                    <p class="text-xs text-slate-400">
+                        Computer vision models can recognize a milk bottle or juice carton bounding box, but <strong>cannot optical penetrate opaque HDPE plastic or tetra-paks</strong> to measure internal volume.
+                    </p>
+                </div>
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1.5">
+                    <div class="flex items-center space-x-2 text-amber-400 text-sm font-bold">
+                        <i class="fa-solid fa-temperature-arrow-down"></i>
+                        <span>2. Piezoresistive "Cold Drift" at 4°C</span>
+                    </div>
+                    <p class="text-xs text-slate-400">
+                        Conventional strain-gauge load cells drift significantly (50–80g) over hours in cold 4°C refrigerated air due to thermal contraction of aluminum beams and gauge adhesives.
+                    </p>
+                </div>
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1.5">
+                    <div class="flex items-center space-x-2 text-sky-400 text-sm font-bold">
+                        <i class="fa-solid fa-smog"></i>
+                        <span>3. Camera Lens Dew-Point Fogging</span>
+                    </div>
+                    <p class="text-xs text-slate-400">
+                        When the refrigerator door opens in tropical/humid ambient air, warm moisture instantly condenses on cold glass optics, rendering vision models blind.
+                    </p>
+                </div>
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1.5">
+                    <div class="flex items-center space-x-2 text-purple-400 text-sm font-bold">
+                        <i class="fa-solid fa-scale-unbalanced-flip"></i>
+                        <span>4. The Multi-Liquid Ambiguity Problem</span>
+                    </div>
+                    <p class="text-xs text-slate-400">
+                        A single load cell shelf cannot mathematically isolate simultaneous liquid usage ($x + y = \Delta W$). If a user pours both milk and juice, a single scale cannot determine individual drops.
+                    </p>
+                </div>
+            </div>
+            <div class="p-3 bg-slate-900/60 rounded-lg border border-slate-800 text-center">
+                <span class="text-xs font-semibold text-slate-300">
+                    👉 <strong>Our Research Gap:</strong> A unified multi-sensor fusion architecture that decouples mass sensing across dedicated zones while canceling thermal drift and optical fogging.
+                </span>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: PROJECT OBJECTIVES -->
+        <div class="slide slide-anim flex-col space-y-6 w-full max-w-4xl" data-index="6">
+            <div class="border-b border-slate-800 pb-3">
+                <span class="text-xs font-mono text-indigo-400 uppercase font-bold tracking-wider">Targets & Deliverables</span>
+                <h2 class="text-3xl font-extrabold text-white">Project Objectives</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm">Obj 1</div>
+                    <h3 class="text-sm font-bold text-white">Low-Cost Non-Invasive Retrofit Form Factor</h3>
+                    <p class="text-xs text-slate-400">
+                        Design a self-contained, battery/USB powered smart insert and magnetic camera pod installable in &lt; 5 minutes on any refrigerator shelf for under ₹3,000 INR.
+                    </p>
+                </div>
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">Obj 2</div>
+                    <h3 class="text-sm font-bold text-white">Differential Dual-Zone Gravimetric Sensing</h3>
+                    <p class="text-xs text-slate-400">
+                        Implement independent dual-cantilever load cell channels with an event-gated tare latch that cancels 4°C thermal drift and isolates multi-liquid usage with ±2g precision.
+                    </p>
+                </div>
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                    <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold text-sm">Obj 3</div>
+                    <h3 class="text-sm font-bold text-white">Passive Anti-Fog Optical Camera Pod</h3>
+                    <p class="text-xs text-slate-400">
+                        Engineer a 3D-printed enclosure with a 65° conical flared baffle, optical isolation collar, and parasitic microcontroller heat harvesting to eliminate lens fogging with 0W extra power.
+                    </p>
+                </div>
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                    <div class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-sm">Obj 4</div>
+                    <h3 class="text-sm font-bold text-white">Real-Time Mobile & Cloud Inventory Ecosystem</h3>
+                    <p class="text-xs text-slate-400">
+                        Develop a local/cloud REST backend (Flask + SQLite) paired with a responsive Web Dashboard and Flutter mobile app with animated liquid gauges and automated grocery checklists.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: PROPOSED METHODOLOGY & SYSTEM ARCHITECTURE -->
+        <div class="slide slide-anim flex-col space-y-5 w-full max-w-5xl" data-index="7">
+            <div class="border-b border-slate-800 pb-3">
+                <span class="text-xs font-mono text-indigo-400 uppercase font-bold tracking-wider">Methodology & Design</span>
+                <h2 class="text-3xl font-extrabold text-white">Proposed Methodology & System Architecture</h2>
+            </div>
+            
+            <!-- Architecture Flow Diagram -->
+            <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-3">
+                <div class="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider">Event-Gated Multi-Sensor Fusion Pipeline</div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-center text-xs">
+                    <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700">
+                        <div class="text-amber-400 font-bold mb-1"><i class="fa-solid fa-door-open mr-1"></i> Phase 1: Access Event</div>
+                        <p class="text-[11px] text-slate-300">Door opens ➔ Reed switch trips ➔ ESP32 latches baseline tare weights $(W_{0\text{a}}, W_{0\text{b}})$.</p>
+                    </div>
+                    <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700">
+                        <div class="text-sky-400 font-bold mb-1"><i class="fa-solid fa-clock mr-1"></i> Phase 2: Settling & Strobe</div>
+                        <p class="text-[11px] text-slate-300">Door closes ➔ 1.2s slosh dampening delay ➔ 100ms flash strobe ➔ ESP32-CAM captures frame.</p>
+                    </div>
+                    <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700">
+                        <div class="text-indigo-400 font-bold mb-1"><i class="fa-solid fa-scale-balanced mr-1"></i> Phase 3: Mass Fusion</div>
+                        <p class="text-[11px] text-slate-300">Dual HX711s sample settled masses $(W_{1\text{a}}, W_{1\text{b}})$. $\Delta W$ isolates liquid consumption cleanly.</p>
+                    </div>
+                    <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700">
+                        <div class="text-emerald-400 font-bold mb-1"><i class="fa-solid fa-mobile-screen mr-1"></i> Phase 4: Sync & UI</div>
+                        <p class="text-[11px] text-slate-300">JSON HTTP POST ➔ Flask backend ➔ YOLOv8 fallback ➔ Live Web Dashboard & Flutter Mobile App.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                <div class="p-3 bg-slate-900/70 rounded-lg border border-slate-800">
+                    <span class="font-bold text-white block mb-1"><i class="fa-solid fa-microchip text-indigo-400 mr-1"></i> Hardware Hub</span>
+                    <span class="text-slate-400">ESP32 + ESP32-CAM (OV2640/3660), 2x 5kg load cells, 2x HX711, DHT22, MC-38 reed switch.</span>
+                </div>
+                <div class="p-3 bg-slate-900/70 rounded-lg border border-slate-800">
+                    <span class="font-bold text-white block mb-1"><i class="fa-solid fa-cubes text-sky-400 mr-1"></i> CAD & Enclosure</span>
+                    <span class="text-slate-400">Parametric OpenSCAD 2-part pod, 65° conical baffle, internal flash isolation collar, PETG print.</span>
+                </div>
+                <div class="p-3 bg-slate-900/70 rounded-lg border border-slate-800">
+                    <span class="font-bold text-white block mb-1"><i class="fa-solid fa-code text-emerald-400 mr-1"></i> Software & App</span>
+                    <span class="text-slate-400">Python Flask 3.0 REST API, SQLite DB, YOLOv8 vision pipeline, Flutter cross-platform companion app.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: RESULTS / INITIAL IMPLEMENTATION -->
+        <div class="slide slide-anim flex-col space-y-5 w-full max-w-5xl" data-index="8">
+            <div class="border-b border-slate-800 pb-3 flex justify-between items-end">
+                <div>
+                    <span class="text-xs font-mono text-emerald-400 uppercase font-bold tracking-wider">Phase Progress (~40% Completion vs. 20% Requirement)</span>
+                    <h2 class="text-3xl font-extrabold text-white">Results / Initial Implementation</h2>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-xs font-bold border border-emerald-500/40">
+                    Ready for Live Demonstration
+                </span>
+            </div>
+
+            <!-- Deliverables Matrix -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Software Backend & Web Dashboard -->
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-sm font-bold text-white flex items-center space-x-2">
+                            <i class="fa-solid fa-server text-emerald-400"></i>
+                            <span>1. Flask REST Server & Live Web UI</span>
+                        </h4>
+                        <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/60">100% COMPLETE</span>
+                    </div>
+                    <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+                        <li>Operational Flask 3.0 backend with SQLite inventory database.</li>
+                        <li>REST endpoints: <code class="text-[11px] text-indigo-300">/api/telemetry</code>, <code class="text-[11px] text-indigo-300">/api/upload-image</code>, <code class="text-[11px] text-indigo-300">/api/status</code>.</li>
+                        <li>Interactive Tailwind CSS dashboard with live polling & override controls.</li>
+                    </ul>
+                </div>
+
+                <!-- Flutter Mobile Companion App -->
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-sm font-bold text-white flex items-center space-x-2">
+                            <i class="fa-solid fa-mobile-screen-button text-sky-400"></i>
+                            <span>2. Flutter Mobile Companion App</span>
+                        </h4>
+                        <span class="text-[10px] font-mono text-sky-400 bg-sky-950/60 px-2 py-0.5 rounded border border-sky-800/60">100% COMPLETE</span>
+                    </div>
+                    <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+                        <li>Cross-platform Flutter app compiled into release Android APK.</li>
+                        <li>Animated dual-zone liquid fill gauges (Milk & Beverage).</li>
+                        <li>Real-time shelf telemetry cards, automated grocery list, and demo sandbox.</li>
+                    </ul>
+                </div>
+
+                <!-- 3D CAD Enclosure & Optics -->
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-sm font-bold text-white flex items-center space-x-2">
+                            <i class="fa-solid fa-cube text-purple-400"></i>
+                            <span>3. 3D CAD Enclosure Models</span>
+                        </h4>
+                        <span class="text-[10px] font-mono text-purple-400 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-800/60">100% COMPLETE</span>
+                    </div>
+                    <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+                        <li>Parametric OpenSCAD design and binary slice-ready STL files.</li>
+                        <li>65° conical anti-fog baffle + internal optical flash isolation collar.</li>
+                        <li>Zero-support print profile in PETG with dual neodymium magnet sockets.</li>
+                    </ul>
+                </div>
+
+                <!-- Firmware & Next Phase Fabrication -->
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-sm font-bold text-white flex items-center space-x-2">
+                            <i class="fa-solid fa-microchip text-amber-400"></i>
+                            <span>4. Firmware Ready • Next Phase Fabrication</span>
+                        </h4>
+                        <span class="text-[10px] font-mono text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800/60">IN PROGRESS</span>
+                    </div>
+                    <ul class="text-xs text-slate-300 space-y-1 list-disc list-inside">
+                        <li>Firmware source code fully written for ESP32-CAM and ESP32 hub.</li>
+                        <li><strong>Next Milestone (Review III):</strong> 3D print pod, assemble acrylic split tray with dual 5kg load cells, and calibrate HX711s inside refrigerator.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Controls & Navigation -->
+    <footer class="px-8 py-3.5 border-t border-slate-800/90 flex justify-between items-center bg-slate-900/60 backdrop-blur z-50">
+        <div class="text-xs text-slate-500 font-mono">
+            <span>Use keys: <kbd class="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-700 text-slate-300">←</kbd> <kbd class="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-700 text-slate-300">→</kbd> or <kbd class="px-1.5 py-0.5 bg-slate-800 rounded border border-slate-700 text-slate-300">Space</kbd></span>
+        </div>
+        <div class="flex items-center space-x-3">
+            <button onclick="prevSlide()" class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition">
+                <i class="fa-solid fa-chevron-left mr-1"></i> Prev
+            </button>
+            <button onclick="nextSlide()" class="px-5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-600/30 transition">
+                Next <i class="fa-solid fa-chevron-right ml-1"></i>
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 8;
+
+        function showSlide(index) {
+            if (index < 1 || index > totalSlides) return;
+            document.querySelectorAll('.slide').forEach(slide => {
+                slide.classList.remove('active');
+            });
+            const target = document.querySelector(`.slide[data-index="${index}"]`);
+            if (target) {
+                target.classList.add('active');
+                currentSlide = index;
+                document.getElementById('slideIndicator').textContent = `Slide ${currentSlide} of ${totalSlides}`;
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {});
+            } else {
+                document.exitFullscreen().catch(err => {});
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            } else if (e.key === 'f' || e.key === 'F') {
+                toggleFullscreen();
+            }
+        });
+    </script>
+</body>
+</html>
