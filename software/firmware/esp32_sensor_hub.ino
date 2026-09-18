@@ -1,7 +1,8 @@
 /*
  * AI REFRIGERATOR RETROFIT MODULE - DUAL-ZONE SENSOR HUB
- * Target Board: ESP32 NodeMCU (ESP-WROOM-32)
- * Hardware: 2x 5kg Load Cells, 2x HX711, MC-38 Reed Switch, DHT11
+ * Target Board: ESP32-S2-DevKitM-1 (Single-Core Xtensa LX7 @ 240MHz, 2.4GHz Wi-Fi)
+ * Arduino IDE Board: "ESP32S2 Dev Module" or "ESP32-S2-DevKitM-1"
+ * Hardware: 2x 5kg Pre-Fabricated Cantilever Load Cell Kits with HX711 ADCs, MC-38 Reed Switch, DHT11/DHT22
  */
 
 #include "HX711.h"
@@ -9,12 +10,12 @@
 #include <HTTPClient.h>
 #include "DHT.h"
 
-// --- PIN CONFIGURATION ---
-const int REED_PIN = 14;     // Door Reed Switch (INPUT_PULLUP)
+// --- PIN CONFIGURATION (OPTIMIZED FOR ESP32-S2) ---
+const int REED_PIN = 14;     // Door Reed Switch (INPUT_PULLUP, other pin to GND)
 const int DT_DAIRY = 16;     // HX711 #1 (Dairy Zone 1 Data)
 const int DT_DRINKS = 17;    // HX711 #2 (Beverage Zone 2 Data)
 const int SCK_PIN = 4;       // Shared Clock Pulse for both HX711s
-const int DHT_PIN = 27;      // DHT11 Data Pin
+const int DHT_PIN = 5;       // DHT11/DHT22 Climate Data Pin (Safe GPIO on ESP32-S2)
 
 // --- NETWORK CONFIGURATION ---
 const char* ssid = "YOUR_HOTSPOT_OR_WIFI_NAME";

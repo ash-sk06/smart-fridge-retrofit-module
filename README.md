@@ -21,8 +21,8 @@ Conventional smart refrigerators retail at prohibitive price points ($2,000–$4
 
 - **Anti-Fog Conical Camera Pod (`cad/`):** Custom 3D-printable dual-part enclosure featuring a 65° conical anti-fog baffle, internal flash isolation collar (eliminates optical glare on the lens), and dual neodymium magnet mount.
 - **Micro-Hub Edge Firmware (`software/firmware/`):**
-  - **ESP32-CAM:** Door-switch triggered image capture with synchronized PWM LED strobe, sending JPEG frames via HTTP POST to the processing server.
-  - **ESP32 Sensor Hub:** Ultrasonic HC-SR04 for volumetric beverage/milk container depth, dual HX711 5kg load cells for shelf weight, and DHT22 for internal climate metrics.
+  - **ESP32-CAM (with Upgraded OV3660 3MP Sensor):** Door-switch triggered image capture with synchronized 100ms flash strobe, sending JPEG frames via HTTP POST to the processing server.
+  - **ESP32-S2 Sensor Hub (ESP32-S2-DevKitM-1):** High-speed 240MHz Wi-Fi hub sampling dual HX711 24-bit ADCs across 2x pre-fabricated 5kg cantilever scale kits with independent acrylic trays (2mm gap), DHT22 climate metrics, and MC-38 magnetic door switch.
 - **Central Processing & Telemetry Server (`software/`):**
   - Lightweight Flask backend with SQLite inventory logging.
   - Computer Vision pipeline with YOLOv8 inference fallback for item identification.

@@ -1,6 +1,6 @@
 /*
  * AI REFRIGERATOR RETROFIT MODULE - OVERHEAD FLASH CAMERA POD
- * Target Board: AI Thinker ESP32-CAM (OV2640)
+ * Target Board: AI-Thinker ESP32-CAM (with Upgraded OV3660 3MP / OV2640 Sensor)
  * Function: Enclosed flash strobe & HTTP multipart image upload
  */
 
@@ -70,7 +70,13 @@ void setup() {
     Serial.printf("[!] Camera init failed with error 0x%x\n", err);
     return;
   }
-  Serial.println("[OK] OV2640 Camera Sensor Initialized.");
+  sensor_t *s = esp_camera_sensor_get();
+  if (s != NULL) {
+    // OV3660 auto-detected: calibrate orientation and brightness for dark fridge interior
+    s->set_vflip(s, 1);        // Set to 1 if image orientation is inverted
+    s->set_brightness(s, 1);   // Optimal exposure for 100ms flash strobe
+    Serial.println("[OK] Camera Sensor Initialized (OV3660 / OV2640 auto-detected).");
+  }
 
   // Connect to Wi-Fi
   WiFi.begin(ssid, password);

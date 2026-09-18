@@ -10,27 +10,25 @@
 ### A. Electronics & Sensors
 | Component | Specification | Purpose | Indian Source | Cost (INR) |
 |---|---|---|---|---|
-| **ESP32-CAM** | AI-Thinker Module with OV2640 2MP Camera | Overhead vision capture & onboard flash | Robu.in / ElectronicsComp | ₹520 – ₹580 |
-| **FTDI Programmer** | FT232RL USB to TTL Serial Adapter | Required to flash code onto ESP32-CAM | Robu.in | ₹180 – ₹220 |
-| **ESP32 NodeMCU** | 30-pin or 38-pin Dev Board (ESP-WROOM-32) | High-speed parallel HX711 & reed switch reader | Robu.in | ₹280 – ₹340 |
-| **Load Cells (2x)** | 2x 5kg Straight-Bar Aluminum Strain Gauges | Independent mass measurement for Zone 1 & Zone 2 | ElectronicsComp | ₹320 (₹160 x 2) |
-| **ADC Amplifiers (2x)**| 2x HX711 24-Bit ADC Modules | Independent 24-bit differential reading | Robu.in | ₹140 (₹70 x 2) |
+| **ESP32-CAM** | AI-Thinker Module with Upgraded OV3660 3MP Camera | Overhead vision capture & synchronized flash strobe | Robu.in / ElectronicsComp | ₹550 – ₹650 |
+| **Programmer / Cable**| ESP32-CAM-MB Micro-USB Shield or Type-C Cable | Flashing code onto ESP32-CAM | Robu.in / Amazon | ₹100 – ₹180 |
+| **ESP32 Micro-Hub** | ESP32-S2-DevKitM-1 (240MHz Xtensa LX7, 2.4GHz Wi-Fi) | High-speed dual HX711, reed switch & DHT reader | Robu.in | ₹290 – ₹350 |
+| **Scale Kits (2x)** | 2x Pre-Fabricated 5kg Cantilever Scale Kits with HX711 ADCs | Pre-bolted cantilever beams with pre-soldered 24-bit ADCs | Robu.in / Amazon | ₹480 – ₹580 (₹240–₹290 x 2) |
 | **Door Switch** | MC-38 Magnetic Reed Switch with Magnet | Detects door opening and closing events | Robu.in | ₹75 – ₹95 |
 | **Temperature Sensor**| DHT11 or DHT22 Module | Internal compartment temperature & humidity | Robu.in | ₹85 – ₹120 |
-| **Jumper Wires** | 40-pin Male-to-Female, Male-to-Male (20cm) | Circuit interconnects | Local / Robu.in | ₹80 – ₹100 |
-| **USB Cables** | 2x Micro-USB to USB-A cables | Powering ESP32 and connecting to laptop | Already available | ₹0 |
+| **Jumper Wires** | Female-to-Female DuPont Jumpers (20cm) | Circuit interconnects from HX711 to ESP32-S2 | Local / Robu.in | ₹80 – ₹100 |
+| **USB Cables** | 2x Micro-USB / Type-C cables | Powering ESP32 boards from laptop or 5V USB | Already available | ₹0 |
 
 ### B. Mechanical & Hardware Materials
 | Item | Specification | Purpose | Source | Cost (INR) |
 |---|---|---|---|---|
-| **Base Acrylic Plate** | 1 piece of 3mm White Acrylic ($24 \times 16\text{ cm}$) | Bottom stationary base plate resting on shelf | Local acrylic / framing shop | ₹120 – ₹150 |
-| **Dual Top Plates** | 2 pieces of 3mm White Acrylic ($11.5 \times 16\text{ cm}$) | Zone 1 (Dairy) & Zone 2 (Drinks) independent trays | Local acrylic / framing shop | ₹120 – ₹150 |
-| **Riser Spacers** | 2x scrap acrylic / nylon blocks ($45 \times 15 \times 10\text{ mm}$) | Lifts load cells so cantilever beams bend freely | Local shop scrap | ₹30 – ₹50 |
-| **Mounting Screws** | 4x M4 bolts (20mm) + 4x M5 bolts (20mm) with nuts | Bolting load cells to base and top plates | Local hardware store | ₹40 – ₹60 |
+| **Base Acrylic Plate** | 1 piece of 3mm White/Clear Acrylic ($24 \times 16\text{ cm}$) | Bottom stationary base plate resting on shelf | Local acrylic / framing shop | ₹120 – ₹150 |
+| **Dual Top Plates** | 2 pieces of 3mm White/Clear Acrylic ($11.5 \times 16\text{ cm}$) | Zone 1 (Dairy) & Zone 2 (Drinks) independent trays (2mm gap) | Local acrylic / framing shop | ₹120 – ₹150 |
+| **Fasteners / Tape** | 3M VHB Double-Sided Foam Tape or M4/M5 screws | Securing scale kits to base and top trays | Hardware / Amazon | ₹50 – ₹80 |
 | **Silicone Feet** | 4x self-adhesive rubber/silicone bumper pads | Anti-vibration feet for base plate | Hardware / Amazon | ₹40 – ₹60 |
 | **Suction Mounts** | 2x medium heavy-duty suction cups with hooks | Fastening camera pod to fridge ceiling | Local utility store | ₹30 – ₹50 |
 | **Cardboard Box** | Standard shipping box (~$35 \times 25 \times 30\text{ cm}$) | Mock refrigerator enclosure for lab testing | Any delivery box | ₹0 |
-| **TOTAL ESTIMATED COST:** | | | | **₹1,825 – ₹2,265** |
+| **TOTAL ESTIMATED COST:** | | | | **₹1,940 – ₹2,470** |
 
 ---
 

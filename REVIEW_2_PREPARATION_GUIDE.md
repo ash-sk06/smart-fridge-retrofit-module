@@ -10,10 +10,10 @@
 | :--- | :---: | :--- | :---: |
 | **1. Requirement Analysis & Problem Understanding** | **3** | **Slides 3 & 5:** Clear breakdown of domestic food waste (15–20%), the 95% price lock-out (₹1.5L–₹3L smart fridges), and the 4 fatal failure modes of current systems (Opaque bottle blindspot, cold drift, fogging, multi-liquid ambiguity). | **3 / 3** |
 | **2. System Design & Architecture** | **3** | **Slide 7:** Event-gated state machine diagram (`Door Open -> Tare -> Door Close -> 1.2s Dampening Delay -> Flash Strobe & Image Capture -> Dual HX711 Read -> JSON POST -> Flask/YOLO -> Flutter App & Web`). | **3 / 3** |
-| **3. Component/Tool Selection & Technical Justification** | **3** | **Slide 7 & Q&A:** Technical justification for ESP32-CAM (low cost ₹550, hardware timers, PWM strobe, parasitic heat dissipation), Dual HX711 (independent 24-bit ADCs), Flutter (cross-platform, 60fps canvas animations), Flask + SQLite (lightweight local edge server). | **3 / 3** |
-| **4. Initial Prototype / Module Development (~20%)** | **3** | **Slide 8 & Live Demo:** **We have achieved ~40% completion!** Complete Flask backend with SQLite DB, live Tailwind Web Dashboard, fully compiled Flutter Mobile App (with release APK), 3D CAD STL models, and C++ firmware. | **3 / 3** |
-| **5. Innovation & Feasibility** | **3** | **Slide 5 & 6:** Four patent-track physical innovations: Dual-Zone Split Cantilever, Event-Gated Differential Tare Latch, Passive Parasitic Heat Anti-Fogging, and Total BOM strictly under ₹2,500. | **3 / 3** |
-| **6. Project Planning, Teamwork & Presentation** | **3** | **Slides 2, 8 & Deck:** Structured 8-slide flow, clear timeline (Phase 1: Architecture, Phase 2: Software/CAD [Now], Phase 3: Hardware fabrication & calibration, Phase 4: Full integration). | **3 / 3** |
+| **3. Component/Tool Selection & Technical Justification** | **3** | **Slide 7 & Q&A:** Technical justification for **ESP32-S2-DevKitM-1** (240MHz single-core Xtensa LX7, low idle power, 2.4GHz Wi-Fi), **AI-Thinker ESP32-CAM with upgraded OV3660 3MP sensor** (superior low-light dynamic range), **2x pre-fabricated 5kg cantilever scale kits** with HX711 ADCs, Flutter, and Flask + SQLite. | **3 / 3** |
+| **4. Initial Prototype / Module Development (~20%)** | **3** | **Slide 8 & Live Demo:** **We have achieved ~40% completion!** Complete Flask backend with SQLite DB, live Tailwind Web Dashboard, fully compiled Flutter Mobile App (with release APK), 3D CAD STL models, C++ firmware, and **all physical hardware procured and in hand**. | **3 / 3** |
+| **5. Innovation & Feasibility** | **3** | **Slide 5 & 6:** Four patent-track physical innovations: Dual-Zone Split Cantilever (2mm air gap), Event-Gated Differential Tare Latch, Passive Parasitic Heat Anti-Fogging, and Total BOM strictly under ₹2,500. | **3 / 3** |
+| **6. Project Planning, Teamwork & Presentation** | **3** | **Slides 2, 8 & Deck:** Structured 8-slide flow, clear timeline (Phase 1: Architecture, Phase 2: Software/CAD & Procurement [Now], Phase 3: Hardware fabrication & calibration, Phase 4: Full integration). | **3 / 3** |
 | **7. Individual Contribution & Technical Response** | **2** | **Faculty Q&A:** Confident, precise answers to technical questions using the defense scripts provided in Section 5 below. | **2 / 2** |
 | **TOTAL** | **20** | | **20 / 20** |
 
@@ -33,9 +33,10 @@ This is the most critical question the panel may ask. **Do not apologize or say 
 > 2. An operational **live Web Dashboard** with real-time telemetry polling.
 > 3. A cross-platform **Flutter Companion Mobile App** with animated liquid gauges and automated grocery lists.
 > 4. The parametric **3D CAD enclosure in OpenSCAD & STL files** with anti-fog optics.
-> 5. The complete **C++ firmware** for both ESP32 controllers.
+> 5. The complete **C++ firmware** for both the ESP32-S2 and ESP32-CAM controllers.
+> 6. **Hardware Procurement 100% Complete:** We have the **ESP32-S2-DevKitM-1**, the **OV3660 3MP ESP32-CAM**, and the **two pre-fabricated 5kg cantilever scale kits with HX711 ADCs** right here on the table.
 > 
-> This represents **over 40% of the project lifecycle**, far exceeding the 20% milestone required for Review II. Our procurement is finalized, and physical 3D printing and load cell assembly are scheduled for Review III."*
+> This represents **over 40% of the project lifecycle**, far exceeding the 20% milestone required for Review II. Final acrylic tray mounting and refrigerator calibration are scheduled for Review III."*
 
 ---
 
@@ -155,6 +156,19 @@ http://localhost:5050
 ### Q5: "What is your roadmap for Review III (Final Implementation)?"
 > **Answer:** *"For Review III:
 > 1. 3D print the enclosure in PETG using our verified slice profile.
-> 2. Assemble the acrylic dual-zone cantilever base plate with two 5kg aluminum load cells.
+> 2. Mount both 5kg scale kits onto the common $24\times 16\text{ cm}$ base plate with dual $11.5\times 16\text{ cm}$ acrylic upper trays separated by a 2mm air gap.
 > 3. Calibrate the HX711 ADCs with standard reference weights (100g, 500g, 1000g) inside an active 4°C refrigerator.
 > 4. Conduct end-to-end integration tests measuring real liquid consumption accuracy."*
+
+### Q6: "Why did you select the ESP32-S2-DevKitM-1? Doesn't it lack Bluetooth?"
+> **Answer:** *"The ESP32-S2 is an ideal fit because:
+> 1. **Refrigerators are Faraday Cages:** Bluetooth BLE transmits at only 0 to +4 dBm and fails to penetrate insulated steel refrigerator doors. The ESP32-S2 provides robust 2.4 GHz Wi-Fi transmitting up to +20 dBm to reliably reach home routers or hotspots.
+> 2. **Remote Access:** The whole purpose of smart inventory is checking your grocery needs while at the supermarket—Bluetooth's 5-meter range is useless outside the kitchen, whereas our Wi-Fi REST API enables cloud access anywhere.
+> 3. **Single-Core Efficiency:** The 240 MHz Xtensa LX7 core easily handles dual HX711 sampling while reducing baseline thermal dissipation inside the cold compartment."*
+
+### Q7: "Why did you choose the OV3660 camera sensor over the older OV2640?"
+> **Answer:** *"The OV3660 offers an upgrade to 3.0 Megapixels ($2048 \times 1536$) with superior dynamic range and significantly lower noise in low-light environments. Because the camera fires a brief 100ms flash strobe inside a dark refrigerator compartment, the OV3660 captures cleaner edges and sharper container labels, directly improving the bounding box accuracy of our YOLOv8 vision pipeline."*
+
+### Q8: "How are you assembling the dual pressure sensors with acrylic plates?"
+> **Answer:** *"We use two pre-fabricated 5kg aluminum cantilever load cell scale kits. Both kits are mounted to a single common stationary base plate ($24\times 16\text{ cm}$) resting on the refrigerator shelf. We then attach two separate $11.5\times 16\text{ cm}$ acrylic plates—one on each sensor—separated by a strict 2mm physical air gap. This 2mm gap ensures the trays never touch, completely eliminating mechanical cross-talk and isolating dairy mass from beverage mass with 100% mathematical certainty."*
+
