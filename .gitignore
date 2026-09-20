@@ -38,6 +38,8 @@ app.*.map.json
 .widget_preview/
 
 # Android / Gradle
+*.apk
+**/*.apk
 **/.gradle/
 **/local.properties
 **/GeneratedPluginRegistrant.java

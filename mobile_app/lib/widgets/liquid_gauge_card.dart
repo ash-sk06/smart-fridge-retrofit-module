@@ -5,64 +5,78 @@ class LiquidGaugeCard extends StatelessWidget {
   final InventoryItem item;
   final String iconEmoji;
   final VoidCallback? onPour;
+  final VoidCallback? onCalibrate;
 
   const LiquidGaugeCard({
     super.key,
     required this.item,
     required this.iconEmoji,
     this.onPour,
+    this.onCalibrate,
   });
 
   Color _getStatusColor(double pct) {
-    if (pct < 20.0) return Colors.redAccent;
-    if (pct < 45.0) return Colors.amber.shade700;
-    return Colors.teal.shade600;
+    if (pct < 20.0) return const Color(0xFFEF4444);
+    if (pct < 45.0) return const Color(0xFFF59E0B);
+    return const Color(0xFF10B981);
   }
 
   Color _getLiquidGradientStart(double pct) {
-    if (pct < 20.0) return Colors.red.shade400;
-    if (pct < 45.0) return Colors.amber.shade400;
-    return Colors.cyan.shade400;
+    if (pct < 20.0) return const Color(0xFFEF4444);
+    if (pct < 45.0) return const Color(0xFFF59E0B);
+    return const Color(0xFF06B6D4);
   }
 
   Color _getLiquidGradientEnd(double pct) {
-    if (pct < 20.0) return Colors.red.shade700;
-    if (pct < 45.0) return Colors.amber.shade700;
-    return Colors.blue.shade700;
+    if (pct < 20.0) return const Color(0xFFB91C1C);
+    if (pct < 45.0) return const Color(0xFFD97706);
+    return const Color(0xFF3B82F6);
   }
 
   @override
   Widget build(BuildContext context) {
     final statusColor = _getStatusColor(item.fillPercentage);
     final isLow = item.fillPercentage < 20.0;
+    final isExpiringSoon = item.daysToExpiry <= 3;
 
-    return Card(
-      elevation: isLow ? 4 : 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(
-          color: isLow ? Colors.red.shade300 : Colors.transparent,
-          width: isLow ? 1.5 : 0,
-        ),
-      ),
+    return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFF131B2E),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isLow
+              ? const Color(0xFFEF4444).withOpacity(0.6)
+              : const Color(0xFF1E293B),
+          width: isLow ? 1.5 : 1,
+        ),
+        boxShadow: [
+          if (isLow)
+            BoxShadow(
+              color: const Color(0xFFEF4444).withOpacity(0.15),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top Row: Emoji Icon + Title + Category Chip
+            // Top Row: Emoji Icon + Title + Category Chip + Status Pill
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.12),
+                    color: const Color(0xFF0F172A),
                     borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFF334155)),
                   ),
                   child: Text(
                     iconEmoji,
-                    style: const TextStyle(fontSize: 24),
+                    style: const TextStyle(fontSize: 22),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -75,13 +89,15 @@ class LiquidGaugeCard extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
+                          color: Color(0xFFF8FAFC),
                         ),
                       ),
+                      const SizedBox(height: 2),
                       Text(
-                        'Zone: ${item.zoneId.toUpperCase()} • ${item.category}',
-                        style: TextStyle(
+                        '${item.zoneId.toUpperCase()} • ${item.category}',
+                        style: const TextStyle(
                           fontSize: 12,
-                          color: Colors.grey.shade600,
+                          color: Color(0xFF94A3B8),
                         ),
                       ),
                     ],
@@ -124,8 +140,9 @@ class LiquidGaugeCard extends StatelessWidget {
                 Container(
                   height: 32,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
+                    color: const Color(0xFF0B1120),
                     borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: const Color(0xFF1E293B)),
                   ),
                 ),
                 // Animated Liquid Fill Bar
@@ -147,8 +164,8 @@ class LiquidGaugeCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                         boxShadow: [
                           BoxShadow(
-                            color: statusColor.withOpacity(0.3),
-                            blurRadius: 6,
+                            color: statusColor.withOpacity(0.4),
+                            blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
                         ],
@@ -164,11 +181,14 @@ class LiquidGaugeCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${item.fillPercentage.toStringAsFixed(0)}% Remaining',
+                          '${item.fillPercentage.toStringAsFixed(0)}% Fill',
                           style: const TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(blurRadius: 4, color: Colors.black87),
+                            ],
                           ),
                         ),
                         Text(
@@ -176,7 +196,10 @@ class LiquidGaugeCard extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black87,
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(blurRadius: 4, color: Colors.black87),
+                            ],
                           ),
                         ),
                       ],
@@ -187,7 +210,7 @@ class LiquidGaugeCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            // Telemetry Details & Action Button
+            // Expiry & Weight Details
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -195,28 +218,63 @@ class LiquidGaugeCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Gross Weight: ${item.currentWeight.toStringAsFixed(1)} g',
-                      style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
+                      'Load: ${item.currentWeight.toStringAsFixed(1)}g (Tare: ${item.tareWeight.toStringAsFixed(0)}g)',
+                      style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
                     ),
-                    Text(
-                      'Container Tare: ${item.tareWeight.toStringAsFixed(1)} g',
-                      style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.calendar_today_outlined,
+                          size: 12,
+                          color: isExpiringSoon
+                              ? const Color(0xFFEF4444)
+                              : const Color(0xFF64748B),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Expires: ${item.expiryDate} (${item.daysToExpiry}d left)',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: isExpiringSoon ? FontWeight.bold : FontWeight.normal,
+                            color: isExpiringSoon
+                                ? const Color(0xFFEF4444)
+                                : const Color(0xFF94A3B8),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                if (onPour != null)
-                  ElevatedButton.icon(
-                    onPressed: onPour,
-                    icon: const Icon(Icons.local_drink_outlined, size: 14),
-                    label: const Text('Pour 150ml', style: TextStyle(fontSize: 11)),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                      backgroundColor: Colors.grey.shade100,
-                      foregroundColor: Colors.blueGrey.shade800,
-                      elevation: 0,
-                      side: BorderSide(color: Colors.grey.shade300),
-                    ),
-                  ),
+                Row(
+                  children: [
+                    if (onCalibrate != null)
+                      IconButton(
+                        onPressed: onCalibrate,
+                        icon: const Icon(Icons.tune, size: 18),
+                        tooltip: 'Calibrate Container',
+                        style: IconButton.styleFrom(
+                          foregroundColor: const Color(0xFF94A3B8),
+                          backgroundColor: const Color(0xFF0F172A),
+                        ),
+                      ),
+                    if (onPour != null) ...[
+                      const SizedBox(width: 6),
+                      ElevatedButton.icon(
+                        onPressed: onPour,
+                        icon: const Icon(Icons.local_drink_outlined, size: 14),
+                        label: const Text('Pour 150ml', style: TextStyle(fontSize: 11)),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          backgroundColor: const Color(0xFF1E293B),
+                          foregroundColor: const Color(0xFFE2E8F0),
+                          elevation: 0,
+                          side: const BorderSide(color: Color(0xFF334155)),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ],
             ),
           ],
