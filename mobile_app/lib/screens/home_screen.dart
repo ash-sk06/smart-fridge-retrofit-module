@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/inventory_model.dart';
 import '../services/api_service.dart';
+import '../services/notification_service.dart';
 import '../widgets/liquid_gauge_card.dart';
 import '../widgets/telemetry_header.dart';
 import '../widgets/shopping_list_card.dart';
@@ -16,6 +17,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final FridgeApiService _apiService = FridgeApiService();
+  final NotificationService _notificationService = NotificationService();
+  final Set<String> _alertedLowStockZones = {};
   int _currentTabIndex = 0;
 
   FridgeStatus? _status = FridgeStatus.defaultInitial();
@@ -37,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _initConnection() async {
     _currentHost = await _apiService.getHost();
+    await _notificationService.initialize();
     await _refreshAll();
     // Background polling every 2.5s for live hardware telemetry sync
     _pollingTimer = Timer.periodic(const Duration(milliseconds: 2500), (_) {
@@ -63,7 +67,12 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         if (status != null || inventory != null) {
           if (status != null) _status = status;
-          if (inventory != null) _state = inventory;
+          if (inventory != null) {
+            _state = inventory;
+            for (final item in inventory.inventory.values) {
+              _checkAndNotifyLowStock(item);
+            }
+          }
           _isConnected = true;
         } else {
           _isConnected = false;
@@ -149,7 +158,25 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _checkAndNotifyLowStock(InventoryItem item) {
+    if (item.fillPercentage < 20.0 || item.status == 'LOW_STOCK') {
+      if (!_alertedLowStockZones.contains(item.zoneId)) {
+        _alertedLowStockZones.add(item.zoneId);
+        _notificationService.showLowStockNotification(
+          itemName: item.itemName,
+          remainingVolumeMl: item.remainingVolume.toInt(),
+          fillPercentage: item.fillPercentage.toInt(),
+          zoneId: item.zoneId,
+        );
+      }
+    } else {
+      // Re-arm alert when container is refilled / restocked above 20%
+      _alertedLowStockZones.remove(item.zoneId);
+    }
+  }
+
   void _simulateLocalResetFull() {
+    _alertedLowStockZones.clear();
     setState(() {
       _state = FridgeInventoryState.defaultInitial();
       _status = FridgeStatus.defaultInitial();
@@ -216,14 +243,19 @@ class _HomeScreenState extends State<HomeScreen> {
         item.remainingVolume = remainingVol;
         item.fillPercentage = fillPct;
         item.status = isLow ? 'LOW_STOCK' : 'OPTIMAL';
-        if (isLow && !_state!.shoppingList.any((s) => s.itemName.contains(item.itemName))) {
-          _state!.shoppingList.insert(0, ShoppingItem(
-            id: DateTime.now().millisecondsSinceEpoch,
-            itemName: item.itemName,
-            reason: 'AUTO-REORDER: Low Stock (${fillPct.toInt()}%)',
-            isBought: false,
-            addedAt: 'Just now',
-          ));
+        if (isLow) {
+          _checkAndNotifyLowStock(item);
+          if (!_state!.shoppingList.any((s) => s.itemName.contains(item.itemName))) {
+            _state!.shoppingList.insert(0, ShoppingItem(
+              id: DateTime.now().millisecondsSinceEpoch,
+              itemName: item.itemName,
+              reason: 'AUTO-REORDER: Low Stock (${fillPct.toInt()}%)',
+              isBought: false,
+              addedAt: 'Just now',
+            ));
+          }
+        } else {
+          _alertedLowStockZones.remove(item.zoneId);
         }
       });
       if (mounted) {
@@ -248,6 +280,7 @@ class _HomeScreenState extends State<HomeScreen> {
         item.remainingVolume = zoneId == 'zone1' ? 145.0 : 75.0;
         item.fillPercentage = zoneId == 'zone1' ? 15.0 : 15.0;
         item.status = 'LOW_STOCK';
+        _checkAndNotifyLowStock(item);
         if (!_state!.shoppingList.any((s) => s.itemName.contains(item.itemName))) {
           _state!.shoppingList.insert(0, ShoppingItem(
             id: DateTime.now().millisecondsSinceEpoch,
@@ -668,6 +701,34 @@ class _HomeScreenState extends State<HomeScreen> {
               const Text(
                 'Tip: Cloud uses secure HTTPS; Local uses HTTP port 5050.',
                 style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+              ),
+              const SizedBox(height: 12),
+              const Divider(color: Color(0xFF1E293B)),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () async {
+                    await _notificationService.showTestNotification();
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('🔔 Low stock notification sent! Check phone status bar.'),
+                          backgroundColor: Color(0xFF10B981),
+                        ),
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.notifications_active_outlined, size: 16),
+                  label: const Text('🔔 Test Low Stock Phone Alert',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFFF59E0B),
+                    side: const BorderSide(color: Color(0xFFD97706)),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                ),
               ),
             ],
           ),
