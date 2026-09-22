@@ -12,7 +12,7 @@ class FridgeSmartApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'FridgeIQ Control Center',
+      title: 'ChillSense Control Center',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,

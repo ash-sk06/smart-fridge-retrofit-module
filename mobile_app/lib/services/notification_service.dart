@@ -11,7 +11,7 @@ class NotificationService {
   bool _isInitialized = false;
 
   static const String lowStockChannelId = 'fridge_low_stock';
-  static const String lowStockChannelName = 'FridgeIQ Stock Alerts';
+  static const String lowStockChannelName = 'ChillSense Stock Alerts';
   static const String lowStockChannelDesc =
       'Sends instant reminders when refrigerator stock drops below minimum capacity';
 
@@ -89,7 +89,7 @@ class NotificationService {
       styleInformation: BigTextStyleInformation(
         body,
         contentTitle: title,
-        summaryText: 'FridgeIQ Refrigerator Retrofit Alert',
+        summaryText: 'ChillSense Refrigerator Retrofit Alert',
       ),
     );
 

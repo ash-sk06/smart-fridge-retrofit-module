@@ -1,4 +1,4 @@
-# Smart Fridge Retrofit Module (FridgeIQ)
+# ChillSense — Smart Fridge Retrofit Module
 ### AI Refrigerator Retrofit Module Using Multi-Sensor Fusion & Cloud Vision for Food Inventory Management
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
@@ -12,7 +12,7 @@
 
 ## 📌 Overview
 
-The **Smart Fridge Retrofit Module** (**FridgeIQ**) is a non-invasive, low-cost (₹2,000 – ₹3,000 INR / ~$25–$35 USD) hardware-software upgrade package designed to transform any conventional household refrigerator into an intelligent, cloud-connected inventory management appliance.
+The **Smart Fridge Retrofit Module** (**ChillSense**) is a non-invasive, low-cost (₹2,000 – ₹3,000 INR / ~$25–$35 USD) hardware-software upgrade package designed to transform any conventional household refrigerator into an intelligent, cloud-connected inventory management appliance.
 
 Commercial smart refrigerators retail at prohibitive price points ($2,000–$4,000 USD). This retrofit module achieves continuous liquid volume tracking inside opaque cartons, real-time shelf telemetry, condensation-free overhead image capture, and automated restocking notifications through **synchronized multi-sensor IoT fusion** and **Cloud YOLOv8 AI vision**.
 
@@ -62,14 +62,14 @@ Commercial smart refrigerators retail at prohibitive price points ($2,000–$4,0
 │       ├── esp32_cam_strobe.ino        # ESP32-CAM strobe & capture client
 │       └── esp32_sensor_hub.ino        # ESP32 multi-sensor telemetry client
 │
-├── mobile_app/                         # Flutter companion mobile application (FridgeIQ)
+├── mobile_app/                         # Flutter companion mobile application (ChillSense)
 │   ├── lib/                            # Application source (Layered MVVM Architecture)
 │   │   ├── models/                     # Telemetry, inventory & sensor data models
 │   │   ├── services/                   # HTTP REST API client & native notifications
 │   │   ├── widgets/                    # Responsive telemetry grid & liquid gauges
 │   │   └── screens/                    # Dashboard, sensors & live review demo
 │   ├── pubspec.yaml                    # Dart package dependencies
-│   ├── FridgeIQ-v1.0-release.apk       # Production Android release APK
+│   ├── ChillSense-v1.0-release.apk     # Production Android release APK
 │   └── android/                        # Native Android build & notification manifests
 │
 └── README.md                           # Master project documentation
@@ -97,7 +97,7 @@ flutter run
 # Or build production APK:
 flutter build apk --release
 ```
-*A pre-compiled production APK is also provided in `mobile_app/FridgeIQ-v1.0-release.apk`.*
+*A pre-compiled production APK is also provided in `mobile_app/ChillSense-v1.0-release.apk`.*
 
 ### 3. 3D Print the Enclosure
 Open `cad/anti_fog_camera_pod.scad` in OpenSCAD or slice the pre-rendered STL files:

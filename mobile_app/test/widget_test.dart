@@ -4,6 +4,6 @@ import 'package:fridge_smart_retrofit/main.dart';
 void main() {
   testWidgets('Smart Fridge App smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(const FridgeSmartApp());
-    expect(find.text('FridgeIQ Console'), findsOneWidget);
+    expect(find.text('ChillSense Console'), findsOneWidget);
   });
 }

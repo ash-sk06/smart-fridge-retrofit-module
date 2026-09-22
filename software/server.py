@@ -146,7 +146,7 @@ def init_db():
         cursor.execute('''
             INSERT INTO activity_logs (timestamp, event_type, description, zone_id)
             VALUES 
-            (datetime('now', '-25 minutes', 'localtime'), 'SYSTEM_BOOT', 'FridgeIQ Retrofit Module initialized successfully.', NULL),
+            (datetime('now', '-25 minutes', 'localtime'), 'SYSTEM_BOOT', 'ChillSense Retrofit Module initialized successfully.', NULL),
             (datetime('now', '-18 minutes', 'localtime'), 'DOOR_OPEN', 'Refrigerator door opened by user.', NULL),
             (datetime('now', '-18 minutes', 'localtime'), 'CAMERA_SCAN', 'Overhead flash strobe triggered (OV3660 3MP capture).', 'pod'),
             (datetime('now', '-17 minutes', 'localtime'), 'AI_DETECTION', 'YOLOv8n identified: Milk container (Zone 1) & Juice carton (Zone 2).', NULL),
@@ -192,8 +192,8 @@ def index():
 @app.route('/manifest.json')
 def manifest():
     return jsonify({
-        "name": "FridgeIQ Control Center",
-        "short_name": "FridgeIQ",
+        "name": "ChillSense Control Center",
+        "short_name": "ChillSense",
         "description": "AI Refrigerator Retrofit Module User Control & Monitoring Interface",
         "start_url": "/",
         "display": "standalone",
