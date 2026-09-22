@@ -56,3 +56,5 @@ app.*.map.json
 # Miscellaneous
 .Rhistory
 *.log
+docs_archive/
+.docs_archive/
