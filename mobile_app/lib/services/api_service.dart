@@ -69,7 +69,10 @@ class FridgeApiService {
       final response = await http.get(uri).timeout(const Duration(seconds: 4));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        if (data['status'] == 'success') {
+        if (data is Map<String, dynamic> &&
+            (data['status'] == 'success' ||
+                data['status'] == 'online' ||
+                data.containsKey('door_state'))) {
           return FridgeStatus.fromJson(data);
         }
       }
@@ -84,7 +87,10 @@ class FridgeApiService {
       final response = await http.get(uri).timeout(const Duration(seconds: 4));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        if (data['status'] == 'success') {
+        if (data is Map<String, dynamic> &&
+            (data['status'] == 'success' ||
+                data['status'] == 'online' ||
+                data.containsKey('inventory'))) {
           return FridgeInventoryState.fromJson(data);
         }
       }

@@ -10,7 +10,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="ChillSense">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3757/3757876.png">
+    <link rel="icon" type="image/svg+xml" href="/static/app_logo.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/static/app_logo_192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/static/app_logo_512.png">
     
     <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -195,9 +198,7 @@
             <!-- Brand & Device Identification -->
             <div class="flex items-center space-x-3.5">
                 <div class="relative">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 via-indigo-600 to-purple-500 flex items-center justify-center text-white shadow-lg shadow-cyan-500/25 ring-1 ring-white/20">
-                        <i class="fa-solid fa-cube text-base"></i>
-                    </div>
+                    <img src="/static/app_logo.png" alt="ChillSense App Logo" class="w-10 h-10 rounded-xl shadow-lg shadow-emerald-500/25 ring-1 ring-emerald-500/30 object-cover">
                     <span class="absolute -bottom-1 -right-1 flex h-3.5 w-3.5">
                         <span id="pingDot" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                         <span id="pingSolid" class="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-[#070b14]"></span>

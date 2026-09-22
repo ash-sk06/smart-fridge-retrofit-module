@@ -21,6 +21,11 @@ class _HomeScreenState extends State<HomeScreen> {
   final Set<String> _alertedLowStockZones = {};
   int _currentTabIndex = 0;
 
+  DateTime? _doorOpenedTimestamp;
+  bool _doorAjarAlertSent = false;
+  bool _coldChainAlertSent = false;
+  Timer? _doorCheckTimer;
+
   FridgeStatus? _status = FridgeStatus.defaultInitial();
   FridgeInventoryState? _state = FridgeInventoryState.defaultInitial();
   List<SensorDiagnostic> _sensors = SensorDiagnostic.defaultSensors();
@@ -46,10 +51,15 @@ class _HomeScreenState extends State<HomeScreen> {
     _pollingTimer = Timer.periodic(const Duration(milliseconds: 2500), (_) {
       _refreshAll(silent: true);
     });
+    // 1-second interval timer for precise Door-Ajar (> 45s) and Microclimate alerts
+    _doorCheckTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      _evaluateAlerts();
+    });
   }
 
   @override
   void dispose() {
+    _doorCheckTimer?.cancel();
     _pollingTimer?.cancel();
     super.dispose();
   }
@@ -66,18 +76,38 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!mounted) return;
       setState(() {
         if (status != null || inventory != null) {
-          if (status != null) _status = status;
           if (inventory != null) {
             _state = inventory;
             for (final item in inventory.inventory.values) {
               _checkAndNotifyLowStock(item);
             }
           }
+          if (status != null) {
+            _status = status;
+          } else if (inventory != null) {
+            _status = FridgeStatus(
+              fridgeName: _status?.fridgeName ?? 'Smart Retrofit Refrigerator',
+              hardwareMode: _status?.hardwareMode ?? 'Cloud AI Vision Inference',
+              hardwareConnected: true,
+              lastSync: 'Live',
+              doorState: inventory.telemetry.doorState,
+              doorOpenDurationSec: _doorOpenedTimestamp != null
+                  ? DateTime.now().difference(_doorOpenedTimestamp!).inSeconds
+                  : 0,
+              temperatureC: inventory.telemetry.temperatureC,
+              humidityPct: inventory.telemetry.humidityPct,
+              shelfMassG: _status?.shelfMassG ?? 1575.0,
+              maxRatedShelfG: _status?.maxRatedShelfG ?? 10000.0,
+              alerts: _status?.alerts ?? [],
+            );
+          }
           _isConnected = true;
         } else {
           _isConnected = false;
         }
       });
+
+      _evaluateAlerts();
 
       // Also refresh sensors, activity, settings if current tab requires it
       if (_currentTabIndex == 2) {
@@ -158,6 +188,41 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  /// Core evaluator for Door-Ajar Buzzer (> 45s) and Cold-Chain Microclimate (> 4.5°C) alerts
+  void _evaluateAlerts() {
+    final doorState = (_state?.telemetry.doorState.isNotEmpty == true
+            ? _state!.telemetry.doorState
+            : (_status?.doorState ?? 'CLOSED'))
+        .toUpperCase();
+    final tempC = _state?.telemetry.temperatureC ?? _status?.temperatureC ?? 3.8;
+
+    // 1. Door-Ajar Buzzer & Alert (> 45 seconds threshold)
+    if (doorState == 'OPEN') {
+      _doorOpenedTimestamp ??= DateTime.now();
+      final durationSec = DateTime.now().difference(_doorOpenedTimestamp!).inSeconds;
+      if (durationSec >= 45 && !_doorAjarAlertSent) {
+        _doorAjarAlertSent = true;
+        _notificationService.showDoorAjarNotification(durationSec: durationSec);
+      }
+    } else {
+      if (_doorAjarAlertSent) {
+        _notificationService.cancelDoorAjarNotification();
+      }
+      _doorOpenedTimestamp = null;
+      _doorAjarAlertSent = false;
+    }
+
+    // 2. Cold-Chain Microclimate Alert (> 4.5°C threshold)
+    if (tempC > 4.5) {
+      if (!_coldChainAlertSent) {
+        _coldChainAlertSent = true;
+        _notificationService.showColdChainAlertNotification(temperatureC: tempC);
+      }
+    } else {
+      _coldChainAlertSent = false;
+    }
+  }
+
   void _checkAndNotifyLowStock(InventoryItem item) {
     if (item.fillPercentage < 20.0 || item.status == 'LOW_STOCK') {
       if (!_alertedLowStockZones.contains(item.zoneId)) {
@@ -177,6 +242,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _simulateLocalResetFull() {
     _alertedLowStockZones.clear();
+    _doorOpenedTimestamp = null;
+    _doorAjarAlertSent = false;
+    _coldChainAlertSent = false;
+    _notificationService.cancelDoorAjarNotification();
     setState(() {
       _state = FridgeInventoryState.defaultInitial();
       _status = FridgeStatus.defaultInitial();
@@ -185,7 +254,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('✨ Reset Complete! All containers restored to 100% full capacity.'),
+          content: Text('✨ Reset Complete! All containers & sensors restored to 100% capacity.'),
           duration: Duration(seconds: 2),
           backgroundColor: Color(0xFF10B981),
         ),
@@ -197,22 +266,53 @@ class _HomeScreenState extends State<HomeScreen> {
   void _simulateLocalToggleDoor() {
     _state ??= FridgeInventoryState.defaultInitial();
     _status ??= FridgeStatus.defaultInitial();
-    final currentDoor = _state!.telemetry.doorState;
+    final currentDoor = (_state!.telemetry.doorState.isNotEmpty
+            ? _state!.telemetry.doorState
+            : _status!.doorState)
+        .toUpperCase();
     final nextDoor = currentDoor == 'CLOSED' ? 'OPEN' : 'CLOSED';
+    final nextTemp = nextDoor == 'OPEN' ? 6.2 : 3.8;
+    final nextHum = nextDoor == 'OPEN' ? 76 : 62;
+
+    if (nextDoor == 'OPEN') {
+      _doorOpenedTimestamp = DateTime.now();
+      _doorAjarAlertSent = false;
+    } else {
+      if (_doorAjarAlertSent) {
+        _notificationService.cancelDoorAjarNotification();
+      }
+      _doorOpenedTimestamp = null;
+      _doorAjarAlertSent = false;
+    }
 
     setState(() {
       _state = FridgeInventoryState(
         inventory: _state!.inventory,
         telemetry: TelemetryData(
           doorState: nextDoor,
-          temperatureC: nextDoor == 'OPEN' ? 6.2 : 3.8,
-          humidityPct: nextDoor == 'OPEN' ? 76 : 62,
+          temperatureC: nextTemp,
+          humidityPct: nextHum,
           lastDeltaDairy: _state!.telemetry.lastDeltaDairy,
           lastDeltaDrinks: _state!.telemetry.lastDeltaDrinks,
           latestImagePath: _state!.telemetry.latestImagePath,
           detectedObjects: _state!.telemetry.detectedObjects,
         ),
         shoppingList: _state!.shoppingList,
+      );
+      _status = FridgeStatus(
+        fridgeName: _status!.fridgeName,
+        hardwareMode: _status!.hardwareMode,
+        hardwareConnected: _status!.hardwareConnected,
+        lastSync: 'Live',
+        doorState: nextDoor,
+        doorOpenDurationSec: nextDoor == 'OPEN' ? 1 : 0,
+        temperatureC: nextTemp,
+        humidityPct: nextHum,
+        shelfMassG: _status!.shelfMassG,
+        maxRatedShelfG: _status!.maxRatedShelfG,
+        alerts: [
+          if (nextTemp > 4.5) 'COLD_CHAIN_TEMPERATURE_EXCEEDED (> 4.5°C)',
+        ],
       );
       _sensors = _sensors.map((s) {
         if (s.id == 'reed_door') {
@@ -231,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
             name: s.name,
             type: s.type,
             status: s.status,
-            value: nextDoor == 'OPEN' ? '6.2°C / 76% RH' : '3.8°C / 62% RH',
+            value: '$nextTemp°C / $nextHum% RH',
             detail: s.detail,
             lastReading: 'Live I/O',
           );
@@ -240,17 +340,136 @@ class _HomeScreenState extends State<HomeScreen> {
       }).toList();
     });
 
+    _evaluateAlerts();
+
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(nextDoor == 'OPEN' ? '🚪 Door OPENED! Hall sensor triggered & strobe active.' : '🚪 Door CLOSED. Vision scan triggered.'),
+          content: Text(nextDoor == 'OPEN'
+              ? '🚪 Door OPENED! Hall sensor triggered & microclimate warming.'
+              : '🚪 Door CLOSED. Camera strobe triggered & temperature stabilized.'),
           duration: const Duration(seconds: 2),
-          backgroundColor: nextDoor == 'OPEN' ? const Color(0xFFF59E0B) : const Color(0xFF10B981),
+          backgroundColor:
+              nextDoor == 'OPEN' ? const Color(0xFFF59E0B) : const Color(0xFF10B981),
         ),
       );
     }
-    final simAction = nextDoor == 'OPEN' ? 'door_open' : 'door_close';
-    _apiService.triggerSimulation(simAction).then((_) => _refreshAll(silent: true));
+    _apiService.simulateDoor(nextDoor).then((_) {
+      final simAction = nextDoor == 'OPEN' ? 'door_open' : 'door_close';
+      _apiService.triggerSimulation(simAction).then((_) => _refreshAll(silent: true));
+    });
+  }
+
+  /// Instant test trigger: simulates leaving door open for > 45s
+  void _simulateDoorAjarDemo() {
+    _doorOpenedTimestamp = DateTime.now().subtract(const Duration(seconds: 48));
+    _doorAjarAlertSent = false;
+    _simulateLocalToggleDoorForceOpen();
+  }
+
+  void _simulateLocalToggleDoorForceOpen() {
+    _state ??= FridgeInventoryState.defaultInitial();
+    _status ??= FridgeStatus.defaultInitial();
+    const nextDoor = 'OPEN';
+    const nextTemp = 6.4;
+    const nextHum = 78;
+
+    _doorOpenedTimestamp ??= DateTime.now().subtract(const Duration(seconds: 48));
+    _doorAjarAlertSent = false;
+
+    setState(() {
+      _state = FridgeInventoryState(
+        inventory: _state!.inventory,
+        telemetry: TelemetryData(
+          doorState: nextDoor,
+          temperatureC: nextTemp,
+          humidityPct: nextHum,
+          lastDeltaDairy: _state!.telemetry.lastDeltaDairy,
+          lastDeltaDrinks: _state!.telemetry.lastDeltaDrinks,
+          latestImagePath: _state!.telemetry.latestImagePath,
+          detectedObjects: _state!.telemetry.detectedObjects,
+        ),
+        shoppingList: _state!.shoppingList,
+      );
+      _status = FridgeStatus(
+        fridgeName: _status!.fridgeName,
+        hardwareMode: _status!.hardwareMode,
+        hardwareConnected: _status!.hardwareConnected,
+        lastSync: 'Live',
+        doorState: nextDoor,
+        doorOpenDurationSec: 48,
+        temperatureC: nextTemp,
+        humidityPct: nextHum,
+        shelfMassG: _status!.shelfMassG,
+        maxRatedShelfG: _status!.maxRatedShelfG,
+        alerts: const [
+          'DOOR_AJAR_WARNING (> 45s)',
+          'COLD_CHAIN_TEMPERATURE_EXCEEDED (> 4.5°C)',
+        ],
+      );
+    });
+
+    _evaluateAlerts();
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('🚨 Simulated Door-Ajar (> 45s) & Microclimate rise! Buzzer triggered.'),
+          duration: Duration(seconds: 3),
+          backgroundColor: Color(0xFFEF4444),
+        ),
+      );
+    }
+  }
+
+  /// Instant test trigger: simulates cold-chain temperature rise (> 4.5°C)
+  void _simulateColdChainDemo() {
+    _coldChainAlertSent = false;
+    const nextTemp = 6.4;
+    setState(() {
+      if (_state != null) {
+        _state = FridgeInventoryState(
+          inventory: _state!.inventory,
+          telemetry: TelemetryData(
+            doorState: _state!.telemetry.doorState,
+            temperatureC: nextTemp,
+            humidityPct: 78,
+            lastDeltaDairy: _state!.telemetry.lastDeltaDairy,
+            lastDeltaDrinks: _state!.telemetry.lastDeltaDrinks,
+            latestImagePath: _state!.telemetry.latestImagePath,
+            detectedObjects: _state!.telemetry.detectedObjects,
+          ),
+          shoppingList: _state!.shoppingList,
+        );
+      }
+      if (_status != null) {
+        _status = FridgeStatus(
+          fridgeName: _status!.fridgeName,
+          hardwareMode: _status!.hardwareMode,
+          hardwareConnected: _status!.hardwareConnected,
+          lastSync: 'Live',
+          doorState: _status!.doorState,
+          doorOpenDurationSec: _status!.doorOpenDurationSec,
+          temperatureC: nextTemp,
+          humidityPct: 78,
+          shelfMassG: _status!.shelfMassG,
+          maxRatedShelfG: _status!.maxRatedShelfG,
+          alerts: const ['COLD_CHAIN_TEMPERATURE_EXCEEDED (> 4.5°C)'],
+        );
+      }
+    });
+
+    _evaluateAlerts();
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('⚠️ Temperature increased to 6.4°C (> 4.5°C threshold)! Alert fired.'),
+          duration: Duration(seconds: 3),
+          backgroundColor: Color(0xFFEF4444),
+        ),
+      );
+    }
   }
 
   void _simulateLocalPour(String zoneId, double deltaWeight) {
@@ -788,11 +1007,63 @@ class _HomeScreenState extends State<HomeScreen> {
                     }
                   },
                   icon: const Icon(Icons.notifications_active_outlined, size: 16),
-                  label: const Text('🔔 Test Low Stock Phone Alert',
+                  label: const Text('🔔 Test Low Stock Alert',
                       style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: const Color(0xFFF59E0B),
                     side: const BorderSide(color: Color(0xFFD97706)),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () async {
+                    await _notificationService.showTestDoorAjarNotification();
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('🚨 Door-Ajar Buzzer (>45s) notification sent!'),
+                          backgroundColor: Color(0xFFEF4444),
+                        ),
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.meeting_room_outlined, size: 16),
+                  label: const Text('🚨 Test Door-Ajar Buzzer (>45s)',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFFEF4444),
+                    side: const BorderSide(color: Color(0xFFDC2626)),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () async {
+                    await _notificationService.showTestColdChainNotification();
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('🌡️ Cold-Chain (>4.5°C) alert notification sent!'),
+                          backgroundColor: Color(0xFFEF4444),
+                        ),
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.thermostat_outlined, size: 16),
+                  label: const Text('🌡️ Test Cold-Chain Alert (>4.5°C)',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF38BDF8),
+                    side: const BorderSide(color: Color(0xFF0284C7)),
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
@@ -1062,6 +1333,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       _buildDemoChip('🔄 Reset All 100%', () {
                         _simulateLocalResetFull();
                       }, isSuccess: true, isExpanded: true),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      _buildDemoChip('🚨 Door Ajar (>45s)', () {
+                        _simulateDoorAjarDemo();
+                      }, isAlert: true, isExpanded: true),
+                      const SizedBox(width: 8),
+                      _buildDemoChip('🌡️ Warm (>4.5°C)', () {
+                        _simulateColdChainDemo();
+                      }, isAlert: true, isExpanded: true),
                     ],
                   ),
                 ],

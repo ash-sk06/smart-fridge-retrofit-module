@@ -169,6 +169,7 @@ active_state = {
     "detected_objects": ["Whole Milk in Zone 1 (Dairy)", "Orange Juice in Zone 2 (Beverage)"],
     "last_hardware_ping": None,
     "is_hardware_active": False,
+    "door_opened_at": None,
     "ai_status": "YOLOv8n Cloud Active (42ms Cloud Host)"
 }
 
@@ -189,6 +190,10 @@ def get_yolo():
 def index():
     return render_template('index.html')
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static', 'favicon.png', mimetype='image/png')
+
 @app.route('/manifest.json')
 def manifest():
     return jsonify({
@@ -202,10 +207,22 @@ def manifest():
         "theme_color": "#0f172a",
         "icons": [
             {
-                "src": "https://cdn-icons-png.flaticon.com/512/3757/3757876.png",
+                "src": "/static/app_logo_192.png",
+                "sizes": "192x192",
+                "type": "image/png",
+                "purpose": "any maskable"
+            },
+            {
+                "src": "/static/app_logo_512.png",
                 "sizes": "512x512",
                 "type": "image/png",
                 "purpose": "any maskable"
+            },
+            {
+                "src": "/static/app_logo.svg",
+                "sizes": "any",
+                "type": "image/svg+xml",
+                "purpose": "any"
             }
         ]
     })
@@ -230,17 +247,40 @@ def get_status():
     is_hw = active_state.get("is_hardware_active", False)
     mode = "HARDWARE" if is_hw else settings.get("system_mode", "SIMULATION")
 
+    door_opened_at = active_state.get("door_opened_at")
+    door_duration = int((datetime.now() - door_opened_at).total_seconds()) if door_opened_at and active_state["door_state"] == "OPEN" else 0
+
     return jsonify({
-        "status": "online",
+        "status": "success",
+        "online": True,
+        "system_status": "online",
         "fridge_name": settings.get("fridge_name", "Main Kitchen Refrigerator"),
         "mode": mode,
         "hardware_mode": mode,
         "hardware_connected": is_hw,
         "door_state": active_state["door_state"],
+        "door_open_duration_sec": door_duration,
         "temperature_c": active_state["temperature_c"],
         "humidity_pct": active_state["humidity_pct"],
         "total_shelf_weight_g": round(total_wt, 1),
         "firmware_version": settings.get("firmware_version", "v2.1.0-retrofit"),
+        "door": {
+            "state": active_state["door_state"],
+            "open_duration_sec": door_duration
+        },
+        "climate": {
+            "temperature_c": active_state["temperature_c"],
+            "humidity_pct": active_state["humidity_pct"],
+            "status": "OPTIMAL (3.0°C – 4.5°C)" if active_state["temperature_c"] <= 4.5 else "HIGH_TEMP_WARNING"
+        },
+        "shelf": {
+            "total_mass_g": round(total_wt, 1),
+            "max_rated_g": 10000.0
+        },
+        "alerts": [
+            *(["DOOR_AJAR_WARNING (> 45s)"] if door_duration >= 45 and active_state["door_state"] == "OPEN" else []),
+            *(["COLD_CHAIN_TEMPERATURE_EXCEEDED (> 4.5°C)"] if active_state["temperature_c"] > 4.5 else [])
+        ],
         "last_sync": datetime.now().strftime("%I:%M:%S %p")
     })
 
@@ -705,9 +745,16 @@ def test_simulate():
 
     if action == 'door_open':
         active_state['door_state'] = 'OPEN'
+        if not active_state.get('door_opened_at'):
+            active_state['door_opened_at'] = datetime.now()
+        active_state['temperature_c'] = 6.2
+        active_state['humidity_pct'] = 76
         log_activity("DOOR_OPEN", "Refrigerator door opened by user. Baseline tare latch armed.")
     elif action == 'door_close':
         active_state['door_state'] = 'CLOSED'
+        active_state['door_opened_at'] = None
+        active_state['temperature_c'] = 3.8
+        active_state['humidity_pct'] = 62
         log_activity("DOOR_CLOSE", "Refrigerator door closed. Sloshing dampening window (1.2s) & strobe triggered.")
     elif action == 'drink_milk':
         # Simulate pouring 250ml milk
@@ -774,6 +821,9 @@ def test_simulate():
         active_state['last_delta_dairy'] = 0.0
         active_state['last_delta_drinks'] = 0.0
         active_state['door_state'] = 'CLOSED'
+        active_state['door_opened_at'] = None
+        active_state['temperature_c'] = 3.8
+        active_state['humidity_pct'] = 62
         log_activity("SYSTEM_RESET", "Inventory restored to 100% capacity. Shopping replenishment list cleared.")
 
     conn.commit()
@@ -833,8 +883,15 @@ def simulate_door():
     door = data.get('door', 'CLOSED').upper()
     active_state['door_state'] = door
     if door == 'OPEN':
+        if not active_state.get('door_opened_at'):
+            active_state['door_opened_at'] = datetime.now()
+        active_state['temperature_c'] = 6.2
+        active_state['humidity_pct'] = 76
         log_activity("DOOR_OPEN", "Refrigerator door opened by user. Baseline tare latch armed.")
     else:
+        active_state['door_opened_at'] = None
+        active_state['temperature_c'] = 3.8
+        active_state['humidity_pct'] = 62
         log_activity("DOOR_CLOSE", "Refrigerator door closed. Sloshing dampening window (1.2s) & strobe triggered.")
     return jsonify({"status": "success", "door": door})
 

@@ -23,11 +23,11 @@ class TelemetryHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final doorState = status?.doorState ?? telemetry.doorState;
-    final isDoorOpen = doorState.toUpperCase() == 'OPEN';
+    final doorState = (telemetry.doorState.isNotEmpty ? telemetry.doorState : (status?.doorState ?? 'CLOSED')).toUpperCase();
+    final isDoorOpen = doorState == 'OPEN';
     final tempC = status?.temperatureC ?? telemetry.temperatureC;
     final humidity = status?.humidityPct ?? telemetry.humidityPct;
-    final isTempWarm = tempC > 7.0;
+    final isTempWarm = tempC > 4.5;
     final isHardware = status?.hardwareMode == 'HARDWARE';
     final shelfMass = status?.shelfMassG ?? (telemetry.lastDeltaDairy + telemetry.lastDeltaDrinks);
 
