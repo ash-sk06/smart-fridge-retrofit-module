@@ -920,11 +920,20 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context) {
         return AlertDialog(
           backgroundColor: const Color(0xFF131B2E),
-          title: const Row(
+          title: Row(
             children: [
-              Icon(Icons.wifi_tethering, color: Color(0xFF10B981)),
-              SizedBox(width: 8),
-              Text('Server Connection', style: TextStyle(color: Colors.white, fontSize: 16)),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: Image.asset(
+                  'assets/images/app_logo.png',
+                  width: 24,
+                  height: 24,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => const Icon(Icons.wifi_tethering, color: Color(0xFF10B981), size: 24),
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Text('Server Connection', style: TextStyle(color: Colors.white, fontSize: 16)),
             ],
           ),
           content: Column(
@@ -1106,13 +1115,22 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: const Color(0xFF10B981).withOpacity(0.15),
-                borderRadius: BorderRadius.circular(8),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset(
+                'assets/images/app_logo.png',
+                width: 32,
+                height: 32,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF10B981).withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(Icons.kitchen, color: Color(0xFF10B981), size: 20),
+                ),
               ),
-              child: const Icon(Icons.kitchen, color: Color(0xFF10B981), size: 20),
             ),
             const SizedBox(width: 10),
             const Column(

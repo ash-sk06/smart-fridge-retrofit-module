@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="software/static/app_logo_512.png" width="160" alt="ChillSense Logo">
+</p>
+
 # ChillSense — Smart Fridge Retrofit Module
 ### AI Refrigerator Retrofit Module Using Multi-Sensor Fusion & Cloud Vision for Food Inventory Management
 
