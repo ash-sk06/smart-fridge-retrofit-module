@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   FridgeStatus? _status = FridgeStatus.defaultInitial();
   FridgeInventoryState? _state = FridgeInventoryState.defaultInitial();
-  List<SensorDiagnostic> _sensors = [];
+  List<SensorDiagnostic> _sensors = SensorDiagnostic.defaultSensors();
   List<ActivityEvent> _activity = [];
   DeviceSettings? _settings;
 
@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // Also refresh sensors, activity, settings if current tab requires it
       if (_currentTabIndex == 2) {
         final sensors = await _apiService.fetchSensors();
-        if (mounted) setState(() => _sensors = sensors);
+        if (mounted && sensors.isNotEmpty) setState(() => _sensors = sensors);
       } else if (_currentTabIndex == 3) {
         final activity = await _apiService.fetchActivity();
         if (mounted) setState(() => _activity = activity);
@@ -180,6 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _state = FridgeInventoryState.defaultInitial();
       _status = FridgeStatus.defaultInitial();
+      _sensors = SensorDiagnostic.defaultSensors();
     });
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -213,6 +214,30 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         shoppingList: _state!.shoppingList,
       );
+      _sensors = _sensors.map((s) {
+        if (s.id == 'reed_door') {
+          return SensorDiagnostic(
+            id: s.id,
+            name: s.name,
+            type: s.type,
+            status: s.status,
+            value: nextDoor,
+            detail: s.detail,
+            lastReading: 'Live Interrupt',
+          );
+        } else if (s.id == 'dht22') {
+          return SensorDiagnostic(
+            id: s.id,
+            name: s.name,
+            type: s.type,
+            status: s.status,
+            value: nextDoor == 'OPEN' ? '6.2°C / 76% RH' : '3.8°C / 62% RH',
+            detail: s.detail,
+            lastReading: 'Live I/O',
+          );
+        }
+        return s;
+      }).toList();
     });
 
     if (mounted) {
@@ -257,6 +282,20 @@ class _HomeScreenState extends State<HomeScreen> {
         } else {
           _alertedLowStockZones.remove(item.zoneId);
         }
+        _sensors = _sensors.map((s) {
+          if (s.id == (zoneId == 'zone1' ? 'loadcell_1' : 'loadcell_2')) {
+            return SensorDiagnostic(
+              id: s.id,
+              name: s.name,
+              type: s.type,
+              status: s.status,
+              value: '${newWeight.toStringAsFixed(1)}g',
+              detail: s.detail,
+              lastReading: 'Live ADC',
+            );
+          }
+          return s;
+        }).toList();
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -290,6 +329,20 @@ class _HomeScreenState extends State<HomeScreen> {
             addedAt: 'Just now',
           ));
         }
+        _sensors = _sensors.map((s) {
+          if (s.id == (zoneId == 'zone1' ? 'loadcell_1' : 'loadcell_2')) {
+            return SensorDiagnostic(
+              id: s.id,
+              name: s.name,
+              type: s.type,
+              status: s.status,
+              value: '${item.currentWeight.toStringAsFixed(1)}g',
+              detail: s.detail,
+              lastReading: 'Live ADC',
+            );
+          }
+          return s;
+        }).toList();
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -304,7 +357,13 @@ class _HomeScreenState extends State<HomeScreen> {
     _apiService.triggerLowStock(zoneId).then((_) => _refreshAll(silent: true));
   }
 
-  Widget _buildDemoChip(String label, VoidCallback onTap, {bool isAlert = false, bool isSuccess = false}) {
+  Widget _buildDemoChip(
+    String label,
+    VoidCallback onTap, {
+    bool isAlert = false,
+    bool isSuccess = false,
+    bool isExpanded = false,
+  }) {
     Color bg = const Color(0xFF1E293B);
     Color fg = const Color(0xFFE2E8F0);
     Color border = const Color(0xFF334155);
@@ -319,11 +378,12 @@ class _HomeScreenState extends State<HomeScreen> {
       border = const Color(0xFF10B981).withOpacity(0.4);
     }
 
-    return InkWell(
+    final chip = InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        alignment: Alignment.center,
         decoration: BoxDecoration(
           color: bg,
           borderRadius: BorderRadius.circular(8),
@@ -331,10 +391,18 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: Text(
           label,
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: fg),
         ),
       ),
     );
+
+    if (isExpanded) {
+      return Expanded(child: chip);
+    }
+    return chip;
   }
 
   void _showCalibrateDialog(InventoryItem item) {
@@ -959,35 +1027,44 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               const SizedBox(height: 8),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    _buildDemoChip('🥛 Pour 150ml Milk', () {
-                      _simulateLocalPour('zone1', -150.0);
-                    }),
-                    const SizedBox(width: 6),
-                    _buildDemoChip('🍊 Pour 120ml Juice', () {
-                      _simulateLocalPour('zone2', -120.0);
-                    }),
-                    const SizedBox(width: 6),
-                    _buildDemoChip('🚨 Low Stock Milk', () {
-                      _simulateLocalLowStock('zone1');
-                    }, isAlert: true),
-                    const SizedBox(width: 6),
-                    _buildDemoChip('🚨 Low Stock Juice', () {
-                      _simulateLocalLowStock('zone2');
-                    }, isAlert: true),
-                    const SizedBox(width: 6),
-                    _buildDemoChip('🚪 Toggle Door', () {
-                      _simulateLocalToggleDoor();
-                    }),
-                    const SizedBox(width: 6),
-                    _buildDemoChip('🔄 Reset All 100%', () {
-                      _simulateLocalResetFull();
-                    }, isSuccess: true),
-                  ],
-                ),
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      _buildDemoChip('🥛 Pour 150ml Milk', () {
+                        _simulateLocalPour('zone1', -150.0);
+                      }, isExpanded: true),
+                      const SizedBox(width: 8),
+                      _buildDemoChip('🍊 Pour 120ml Juice', () {
+                        _simulateLocalPour('zone2', -120.0);
+                      }, isExpanded: true),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      _buildDemoChip('🚨 Low Stock Milk', () {
+                        _simulateLocalLowStock('zone1');
+                      }, isAlert: true, isExpanded: true),
+                      const SizedBox(width: 8),
+                      _buildDemoChip('🚨 Low Stock Juice', () {
+                        _simulateLocalLowStock('zone2');
+                      }, isAlert: true, isExpanded: true),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      _buildDemoChip('🚪 Toggle Door', () {
+                        _simulateLocalToggleDoor();
+                      }, isExpanded: true),
+                      const SizedBox(width: 8),
+                      _buildDemoChip('🔄 Reset All 100%', () {
+                        _simulateLocalResetFull();
+                      }, isSuccess: true, isExpanded: true),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),
@@ -1157,7 +1234,11 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         else
           ..._sensors.map((s) {
-            final isOnline = s.status == 'ONLINE' || s.status == 'READY';
+            final isOnline = s.status == 'ONLINE' || s.status == 'READY' || s.status == 'ACTIVE' || s.status == 'ARMED / READY';
+            final isArmed = s.status == 'ARMED / READY';
+            final statusColor = isArmed
+                ? const Color(0xFF06B6D4)
+                : (isOnline ? const Color(0xFF10B981) : const Color(0xFFEF4444));
             return Container(
               margin: const EdgeInsets.only(bottom: 12),
               padding: const EdgeInsets.all(16),
@@ -1171,9 +1252,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: isOnline
-                          ? const Color(0xFF10B981).withOpacity(0.15)
-                          : const Color(0xFFEF4444).withOpacity(0.15),
+                      color: statusColor.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
@@ -1184,7 +1263,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               : (s.id.contains('door')
                                   ? Icons.sensor_door
                                   : (s.id.contains('cam') ? Icons.camera_alt : Icons.psychology))),
-                      color: isOnline ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+                      color: statusColor,
                       size: 22,
                     ),
                   ),
@@ -1196,25 +1275,26 @@ class _HomeScreenState extends State<HomeScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              s.name,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                            Expanded(
+                              child: Text(
+                                s.name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
+                            const SizedBox(width: 8),
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                               decoration: BoxDecoration(
-                                color: isOnline
-                                    ? const Color(0xFF10B981).withOpacity(0.15)
-                                    : const Color(0xFFEF4444).withOpacity(0.15),
+                                color: statusColor.withOpacity(0.15),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: isOnline
-                                      ? const Color(0xFF10B981)
-                                      : const Color(0xFFEF4444),
+                                  color: statusColor,
                                 ),
                               ),
                               child: Text(
@@ -1222,9 +1302,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
-                                  color: isOnline
-                                      ? const Color(0xFF10B981)
-                                      : const Color(0xFFEF4444),
+                                  color: statusColor,
                                 ),
                               ),
                             ),
@@ -1233,20 +1311,27 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(height: 2),
                         Text(
                           s.type,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
                         ),
                         const SizedBox(height: 6),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              'Value: ${s.value}',
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF38BDF8),
+                            Expanded(
+                              child: Text(
+                                'Value: ${s.value}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF38BDF8),
+                                ),
                               ),
                             ),
+                            const SizedBox(width: 8),
                             Text(
                               s.lastReading,
                               style: const TextStyle(fontSize: 10, color: Color(0xFF64748B)),

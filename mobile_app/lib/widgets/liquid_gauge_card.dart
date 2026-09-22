@@ -88,6 +88,8 @@ class LiquidGaugeCard extends StatelessWidget {
                     children: [
                       Text(
                         item.itemName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -97,6 +99,8 @@ class LiquidGaugeCard extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         '${item.zoneId.toUpperCase()} • ${item.category}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 12,
                           color: Color(0xFF94A3B8),
@@ -105,6 +109,7 @@ class LiquidGaugeCard extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(width: 8),
                 // Status Pill
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),

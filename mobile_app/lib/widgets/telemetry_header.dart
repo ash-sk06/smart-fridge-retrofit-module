@@ -59,24 +59,31 @@ class TelemetryHeader extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    status?.fridgeName ?? 'Primary Refrigerator',
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFFF8FAFC),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      status?.fridgeName ?? 'Primary Refrigerator',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFF8FAFC),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'Sync: ${status?.lastSync ?? "Just now"}',
-                    style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
-                  ),
-                ],
+                    const SizedBox(height: 2),
+                    Text(
+                      'Sync: ${status?.lastSync ?? "Just now"}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               // Connection Status Pill
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -127,7 +134,7 @@ class TelemetryHeader extends StatelessWidget {
           ),
           const SizedBox(height: 14),
 
-          // Row 2: 4 Telemetry Metrics Grid (Temp, Humidity, Door, Shelf Load)
+          // Row 2: 2x2 Telemetry Metrics Grid (Temp, Humidity, Door, Shelf Load)
           Row(
             children: [
               // Temperature
@@ -151,7 +158,11 @@ class TelemetryHeader extends StatelessWidget {
                   statusColor: const Color(0xFF10B981),
                 ),
               ),
-              const SizedBox(width: 8),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
               // Door Status
               Expanded(
                 child: InkWell(
@@ -198,29 +209,33 @@ class TelemetryHeader extends StatelessWidget {
                       : const Icon(Icons.camera_alt_outlined, size: 16),
                   label: Text(
                     isScanning ? 'Capturing...' : 'Scan Now (OV3660)',
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
                   ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: const Color(0xFF06B6D4),
                     side: const BorderSide(color: Color(0xFF0284C7)),
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: onTareScale,
                   icon: const Icon(Icons.exposure_zero_outlined, size: 16),
                   label: const Text(
                     'Tare Scale (HX711)',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
                   ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: const Color(0xFF94A3B8),
                     side: const BorderSide(color: Color(0xFF334155)),
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
                 ),
@@ -240,31 +255,51 @@ class TelemetryHeader extends StatelessWidget {
     required Color statusColor,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       decoration: BoxDecoration(
         color: const Color(0xFF0B1120),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: const Color(0xFF1E293B)),
       ),
-      child: Column(
+      child: Row(
         children: [
-          Icon(icon, size: 18, color: iconColor),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: statusColor,
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: iconColor.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(8),
             ),
+            child: Icon(icon, size: 18, color: iconColor),
           ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 9,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF64748B),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  value,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: statusColor,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF64748B),
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

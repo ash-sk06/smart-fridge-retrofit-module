@@ -204,6 +204,65 @@ class SensorDiagnostic {
       lastReading: json['last_reading'] ?? '',
     );
   }
+
+  static List<SensorDiagnostic> defaultSensors() {
+    return [
+      SensorDiagnostic(
+        id: 'loadcell_1',
+        name: 'Dairy Cantilever Scale #1',
+        type: '5kg Straight-Bar Load Cell + HX711',
+        status: 'ONLINE',
+        value: '1045.0g',
+        detail: 'GPIO 16 (DT) / GPIO 4 (SCK)',
+        lastReading: 'Live ADC',
+      ),
+      SensorDiagnostic(
+        id: 'loadcell_2',
+        name: 'Beverage Cantilever Scale #2',
+        type: '5kg Straight-Bar Load Cell + HX711',
+        status: 'ONLINE',
+        value: '530.0g',
+        detail: 'GPIO 17 (DT) / GPIO 4 (SCK)',
+        lastReading: 'Live ADC',
+      ),
+      SensorDiagnostic(
+        id: 'dht22',
+        name: 'DHT22 Climate Sensor',
+        type: 'Digital Temp / Humidity',
+        status: 'ONLINE',
+        value: '3.8°C / 68% RH',
+        detail: 'Cold-Chain Optimal (GPIO 5)',
+        lastReading: 'Live I/O',
+      ),
+      SensorDiagnostic(
+        id: 'reed_door',
+        name: 'MC-38 Magnetic Door Switch',
+        type: 'Magnetic Reed Contact',
+        status: 'ONLINE',
+        value: 'CLOSED',
+        detail: 'GPIO 14 (INPUT_PULLUP)',
+        lastReading: 'Interrupt Driven',
+      ),
+      SensorDiagnostic(
+        id: 'esp32_cam',
+        name: 'ESP32-CAM OV3660 Pod',
+        type: '3MP Fisheye Camera + LED Strobe',
+        status: 'ARMED / READY',
+        value: '350 Lux Strobe',
+        detail: '65° Anti-Fog Optical Flare Baffle',
+        lastReading: 'Armed',
+      ),
+      SensorDiagnostic(
+        id: 'cloud_yolo',
+        name: 'Ultralytics YOLOv8n Cloud Engine',
+        type: 'Cloud AI Vision Inference',
+        status: 'ACTIVE',
+        value: 'Cloud Ingest ~42ms',
+        detail: 'Zero In-Fridge Heat • Classes: bottle, carton, container',
+        lastReading: 'Cloud Accelerated',
+      ),
+    ];
+  }
 }
 
 class ActivityEvent {

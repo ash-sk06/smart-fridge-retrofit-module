@@ -37,37 +37,46 @@ class CameraVisionCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF8B5CF6).withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(8),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF8B5CF6).withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.camera_alt_outlined,
+                            size: 18, color: Color(0xFFA78BFA)),
                       ),
-                      child: const Icon(Icons.camera_alt_outlined,
-                          size: 18, color: Color(0xFFA78BFA)),
-                    ),
-                    const SizedBox(width: 10),
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Overhead Vision Pod',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFFF8FAFC),
-                          ),
+                      const SizedBox(width: 10),
+                      const Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Overhead Vision Pod',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFF8FAFC),
+                              ),
+                            ),
+                            Text(
+                              'ESP32-CAM OV3660 • 1080p LED Strobe',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                            ),
+                          ],
                         ),
-                        Text(
-                          'ESP32-CAM OV3660 • 1080p LED Strobe',
-                          style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
-                        ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
+                const SizedBox(width: 8),
                 Row(
                   children: [
                     if (onTriggerScan != null)
