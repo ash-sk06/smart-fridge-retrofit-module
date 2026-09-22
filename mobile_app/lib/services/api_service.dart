@@ -27,12 +27,23 @@ class FridgeApiService {
   }
 
   Future<void> setHost(String newHost) async {
-    _host = newHost.trim().replaceAll('http://', '').replaceAll('/', '');
+    _host = newHost.trim();
+    if (_host.endsWith('/')) {
+      _host = _host.substring(0, _host.length - 1);
+    }
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_prefKey, _host);
   }
 
-  String get baseUrl => 'http://$_host';
+  String get baseUrl {
+    if (_host.startsWith('http://') || _host.startsWith('https://')) {
+      return _host;
+    }
+    if (_host.contains('onrender.com')) {
+      return 'https://$_host';
+    }
+    return 'http://$_host';
+  }
 
   /// Fetches system status, connection health, and climate
   Future<FridgeStatus?> fetchStatus() async {
@@ -273,5 +284,11 @@ class FridgeApiService {
     } catch (_) {
       return false;
     }
+  }
+
+  /// Triggers low stock simulation for a specific zone
+  Future<bool> triggerLowStock(String zoneId) async {
+    final action = zoneId == 'zone2' ? 'low_stock_juice' : 'low_stock_milk';
+    return triggerSimulation(action);
   }
 }

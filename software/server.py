@@ -745,6 +745,19 @@ def test_simulate():
         ''')
         active_state['last_delta_dairy'] = -600.0
         log_activity("ALERT", "LOW STOCK WARNING: Milk volume dropped to 150ml (15%). Auto-added to smart shopping list!", "zone1")
+    elif action == 'low_stock_juice':
+        # Drop juice below 20% to trigger shopping list
+        cursor.execute('''
+            UPDATE inventory 
+            SET current_weight=110.0, remaining_volume=80.0, fill_percentage=16.0, status='LOW_STOCK', last_updated=CURRENT_TIMESTAMP 
+            WHERE zone_id="zone2"
+        ''')
+        cursor.execute('''
+            INSERT OR IGNORE INTO shopping_list (item_name, reason, added_at)
+            VALUES ('Tropicana Orange Juice (500ml)', 'LOW_STOCK (< 20%)', CURRENT_TIMESTAMP)
+        ''')
+        active_state['last_delta_drinks'] = -320.0
+        log_activity("ALERT", "LOW STOCK WARNING: Orange Juice volume dropped to 80ml (16%). Auto-added to smart shopping list!", "zone2")
     elif action == 'reset_full':
         cursor.execute('''
             UPDATE inventory 
@@ -765,6 +778,64 @@ def test_simulate():
     conn.commit()
     conn.close()
     return jsonify({"status": "simulated", "action": action})
+
+@app.route('/api/simulate-pour', methods=['POST'])
+def simulate_pour():
+    """Simulates pouring fluid from a specific zone (e.g. -150ml)"""
+    data = request.get_json(force=True) or {}
+    zone = data.get('zone', 'zone1')
+    raw_delta = float(data.get('delta', -150.0))
+    # Ensure delta is negative for depletion
+    delta = -abs(raw_delta)
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT current_weight, tare_weight, full_volume, item_name FROM inventory WHERE zone_id=?', (zone,))
+    row = cursor.fetchone()
+    if row:
+        curr_w, tare_w, full_vol, name = row
+        density = 1.032 if zone == 'zone1' else 1.045
+        new_w = max(float(tare_w), float(curr_w) + delta)
+        net_w = max(0.0, new_w - float(tare_w))
+        rem_vol = round(net_w / density, 1)
+        fill_pct = round(min(100.0, max(0.0, (rem_vol / float(full_vol)) * 100.0)), 1)
+        status = 'LOW_STOCK' if fill_pct < 20.0 else 'OPTIMAL'
+
+        cursor.execute('''
+            UPDATE inventory 
+            SET current_weight=?, remaining_volume=?, fill_percentage=?, status=?, last_updated=CURRENT_TIMESTAMP 
+            WHERE zone_id=?
+        ''', (new_w, rem_vol, fill_pct, status, zone))
+
+        if zone == 'zone1':
+            active_state['last_delta_dairy'] = delta
+        else:
+            active_state['last_delta_drinks'] = delta
+
+        if fill_pct < 20.0:
+            cursor.execute('''
+                INSERT OR IGNORE INTO shopping_list (item_name, reason, added_at)
+                VALUES (?, 'LOW_STOCK (< 20%)', CURRENT_TIMESTAMP)
+            ''', (name,))
+            log_activity("ALERT", f"LOW STOCK WARNING: {name} volume dropped to {rem_vol}ml ({fill_pct}%). Auto-added to smart shopping list!", zone)
+        else:
+            log_activity("MASS_CHANGE", f"Simulated pour: {abs(delta):.0f}g consumed from {zone} ({name}). Remaining: {rem_vol}ml ({fill_pct}%).", zone)
+
+        conn.commit()
+    conn.close()
+    return jsonify({"status": "success", "zone": zone, "delta": delta})
+
+@app.route('/api/simulate-door', methods=['POST'])
+def simulate_door():
+    """Simulates door opening or closing"""
+    data = request.get_json(force=True) or {}
+    door = data.get('door', 'CLOSED').upper()
+    active_state['door_state'] = door
+    if door == 'OPEN':
+        log_activity("DOOR_OPEN", "Refrigerator door opened by user. Baseline tare latch armed.")
+    else:
+        log_activity("DOOR_CLOSE", "Refrigerator door closed. Sloshing dampening window (1.2s) & strobe triggered.")
+    return jsonify({"status": "success", "door": door})
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5050))

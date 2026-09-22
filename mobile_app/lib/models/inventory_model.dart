@@ -2,12 +2,12 @@ class InventoryItem {
   final String zoneId;
   final String itemName;
   final String category;
-  final double currentWeight;
-  final double tareWeight;
-  final double fullVolume;
-  final double fillPercentage;
-  final double remainingVolume;
-  final String status;
+  double currentWeight;
+  double tareWeight;
+  double fullVolume;
+  double fillPercentage;
+  double remainingVolume;
+  String status;
   final String expiryDate;
   final int daysToExpiry;
   final String lastUpdated;

@@ -5,6 +5,7 @@ class LiquidGaugeCard extends StatelessWidget {
   final InventoryItem item;
   final String iconEmoji;
   final VoidCallback? onPour;
+  final VoidCallback? onLowStock;
   final VoidCallback? onCalibrate;
 
   const LiquidGaugeCard({
@@ -12,6 +13,7 @@ class LiquidGaugeCard extends StatelessWidget {
     required this.item,
     required this.iconEmoji,
     this.onPour,
+    this.onLowStock,
     this.onCalibrate,
   });
 
@@ -246,7 +248,10 @@ class LiquidGaugeCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                Row(
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 4,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     if (onCalibrate != null)
                       IconButton(
@@ -258,21 +263,37 @@ class LiquidGaugeCard extends StatelessWidget {
                           backgroundColor: const Color(0xFF0F172A),
                         ),
                       ),
-                    if (onPour != null) ...[
-                      const SizedBox(width: 6),
+                    if (onPour != null)
                       ElevatedButton.icon(
                         onPressed: onPour,
-                        icon: const Icon(Icons.local_drink_outlined, size: 14),
-                        label: const Text('Pour 150ml', style: TextStyle(fontSize: 11)),
+                        icon: const Icon(Icons.local_drink_outlined, size: 13),
+                        label: Text(
+                          item.zoneId == 'zone1' ? 'Pour 150ml' : 'Pour 120ml',
+                          style: const TextStyle(fontSize: 11),
+                        ),
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                           backgroundColor: const Color(0xFF1E293B),
                           foregroundColor: const Color(0xFFE2E8F0),
                           elevation: 0,
                           side: const BorderSide(color: Color(0xFF334155)),
                         ),
                       ),
-                    ],
+                    if (onLowStock != null)
+                      ElevatedButton.icon(
+                        onPressed: onLowStock,
+                        icon: const Icon(Icons.warning_amber_rounded, size: 13, color: Color(0xFFEF4444)),
+                        label: const Text(
+                          'Low Stock',
+                          style: TextStyle(fontSize: 11, color: Color(0xFFEF4444), fontWeight: FontWeight.bold),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                          backgroundColor: const Color(0xFFEF4444).withOpacity(0.15),
+                          elevation: 0,
+                          side: BorderSide(color: const Color(0xFFEF4444).withOpacity(0.4)),
+                        ),
+                      ),
                   ],
                 ),
               ],

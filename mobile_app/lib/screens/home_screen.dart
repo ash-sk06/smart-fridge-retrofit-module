@@ -149,6 +149,107 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _simulateLocalPour(String zoneId, double deltaWeight) {
+    if (_state == null) return;
+    final item = _state!.inventory[zoneId];
+    if (item != null) {
+      setState(() {
+        final newWeight = (item.currentWeight + deltaWeight).clamp(item.tareWeight, 5000.0);
+        final netWeight = (newWeight - item.tareWeight).clamp(0.0, 5000.0);
+        final density = zoneId == 'zone1' ? 1.032 : 1.045;
+        final remainingVol = (netWeight / density).clamp(0.0, item.fullVolume);
+        final fillPct = ((remainingVol / item.fullVolume) * 100.0).clamp(0.0, 100.0);
+        final isLow = fillPct < 20.0;
+        item.currentWeight = newWeight;
+        item.remainingVolume = remainingVol;
+        item.fillPercentage = fillPct;
+        item.status = isLow ? 'LOW_STOCK' : 'OPTIMAL';
+        if (isLow && !_state!.shoppingList.any((s) => s.itemName.contains(item.itemName))) {
+          _state!.shoppingList.insert(0, ShoppingItem(
+            id: DateTime.now().millisecondsSinceEpoch,
+            itemName: item.itemName,
+            reason: 'LOW_STOCK (< 20%)',
+            isBought: false,
+            addedAt: 'Just now',
+          ));
+        }
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Poured ${deltaWeight.abs().toInt()}ml from ${item.itemName}. Remaining: ${item.remainingVolume.toInt()}ml (${item.fillPercentage.toInt()}%)'),
+            duration: const Duration(seconds: 2),
+            backgroundColor: const Color(0xFF06B6D4),
+          ),
+        );
+      }
+    }
+  }
+
+  void _simulateLocalLowStock(String zoneId) {
+    if (_state == null) return;
+    final item = _state!.inventory[zoneId];
+    if (item != null) {
+      setState(() {
+        item.currentWeight = zoneId == 'zone1' ? 195.0 : 110.0;
+        item.remainingVolume = zoneId == 'zone1' ? 150.0 : 80.0;
+        item.fillPercentage = zoneId == 'zone1' ? 15.0 : 16.0;
+        item.status = 'LOW_STOCK';
+        if (!_state!.shoppingList.any((s) => s.itemName.contains(item.itemName))) {
+          _state!.shoppingList.insert(0, ShoppingItem(
+            id: DateTime.now().millisecondsSinceEpoch,
+            itemName: item.itemName,
+            reason: 'LOW_STOCK (< 20%)',
+            isBought: false,
+            addedAt: 'Just now',
+          ));
+        }
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('LOW STOCK TRIGGERED! ${item.itemName} at ${item.fillPercentage.toInt()}%. Added to shopping list.'),
+            duration: const Duration(seconds: 2),
+            backgroundColor: const Color(0xFFEF4444),
+          ),
+        );
+      }
+    }
+  }
+
+  Widget _buildDemoChip(String label, VoidCallback onTap, {bool isAlert = false, bool isSuccess = false}) {
+    Color bg = const Color(0xFF1E293B);
+    Color fg = const Color(0xFFE2E8F0);
+    Color border = const Color(0xFF334155);
+
+    if (isAlert) {
+      bg = const Color(0xFFEF4444).withOpacity(0.18);
+      fg = const Color(0xFFEF4444);
+      border = const Color(0xFFEF4444).withOpacity(0.4);
+    } else if (isSuccess) {
+      bg = const Color(0xFF10B981).withOpacity(0.18);
+      fg = const Color(0xFF10B981);
+      border = const Color(0xFF10B981).withOpacity(0.4);
+    }
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: border),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: fg),
+        ),
+      ),
+    );
+  }
+
   void _showCalibrateDialog(InventoryItem item) {
     final nameCtrl = TextEditingController(text: item.itemName);
     final volCtrl = TextEditingController(text: item.fullVolume.toInt().toString());
@@ -670,6 +771,80 @@ class _HomeScreenState extends State<HomeScreen> {
           onTareScale: _calibrateScales,
         ),
 
+        // Prototype Live Review Demo Dock
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            color: const Color(0xFF0F172A),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: const Color(0xFF8B5CF6).withOpacity(0.35)),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF8B5CF6).withOpacity(0.08),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Row(
+                children: [
+                  Icon(Icons.science_outlined, size: 14, color: Color(0xFFA78BFA)),
+                  SizedBox(width: 6),
+                  Text(
+                    'FACULTY REVIEW & DEMO CONTROLS',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.8,
+                      color: Color(0xFFA78BFA),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _buildDemoChip('🥛 Pour 150ml Milk', () async {
+                      _simulateLocalPour('zone1', -150.0);
+                      await _apiService.simulatePour('zone1', -150.0);
+                      _refreshAll();
+                    }),
+                    const SizedBox(width: 6),
+                    _buildDemoChip('🍊 Pour 120ml Juice', () async {
+                      _simulateLocalPour('zone2', -120.0);
+                      await _apiService.simulatePour('zone2', -120.0);
+                      _refreshAll();
+                    }),
+                    const SizedBox(width: 6),
+                    _buildDemoChip('🚨 Trigger Low Stock (<20%)', () async {
+                      _simulateLocalLowStock('zone1');
+                      await _apiService.triggerSimulation('low_stock_milk');
+                      _refreshAll();
+                    }, isAlert: true),
+                    const SizedBox(width: 6),
+                    _buildDemoChip('🚪 Toggle Door Event', () async {
+                      final next = telemetry.doorState == 'CLOSED' ? 'door_open' : 'door_close';
+                      await _apiService.triggerSimulation(next);
+                      _refreshAll();
+                    }),
+                    const SizedBox(width: 6),
+                    _buildDemoChip('🔄 Reset All 100%', () async {
+                      await _apiService.triggerSimulation('reset_full');
+                      _refreshAll();
+                    }, isSuccess: true),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+
         // Dual Load Cell Liquid Tray Section
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -689,7 +864,13 @@ class _HomeScreenState extends State<HomeScreen> {
             item: zone1,
             iconEmoji: '🥛',
             onPour: () async {
+              _simulateLocalPour('zone1', -150.0);
               await _apiService.simulatePour('zone1', -150.0);
+              _refreshAll();
+            },
+            onLowStock: () async {
+              _simulateLocalLowStock('zone1');
+              await _apiService.triggerSimulation('low_stock_milk');
               _refreshAll();
             },
             onCalibrate: () => _showCalibrateDialog(zone1),
@@ -700,7 +881,13 @@ class _HomeScreenState extends State<HomeScreen> {
             item: zone2,
             iconEmoji: '🍊',
             onPour: () async {
+              _simulateLocalPour('zone2', -120.0);
               await _apiService.simulatePour('zone2', -120.0);
+              _refreshAll();
+            },
+            onLowStock: () async {
+              _simulateLocalLowStock('zone2');
+              await _apiService.triggerSimulation('low_stock_juice');
               _refreshAll();
             },
             onCalibrate: () => _showCalibrateDialog(zone2),
@@ -783,7 +970,14 @@ class _HomeScreenState extends State<HomeScreen> {
               item: item,
               iconEmoji: item.zoneId == 'zone1' ? '🥛' : '🍊',
               onPour: () async {
-                await _apiService.simulatePour(item.zoneId, -120.0);
+                final delta = item.zoneId == 'zone1' ? -150.0 : -120.0;
+                _simulateLocalPour(item.zoneId, delta);
+                await _apiService.simulatePour(item.zoneId, delta);
+                _refreshAll();
+              },
+              onLowStock: () async {
+                _simulateLocalLowStock(item.zoneId);
+                await _apiService.triggerLowStock(item.zoneId);
                 _refreshAll();
               },
               onCalibrate: () => _showCalibrateDialog(item),
