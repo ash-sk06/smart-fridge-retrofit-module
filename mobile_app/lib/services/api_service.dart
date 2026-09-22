@@ -5,7 +5,7 @@ import '../models/inventory_model.dart';
 
 class FridgeApiService {
   static const String _prefKey = 'fridge_server_ip';
-  static const String defaultHost = '192.168.1.23:5050';
+  static const String defaultHost = 'smart-fridge-retrofit-module.onrender.com';
 
   String _host = defaultHost;
 
@@ -16,13 +16,30 @@ class FridgeApiService {
   Future<void> _loadHost() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      _host = prefs.getString(_prefKey) ?? defaultHost;
-    } catch (_) {}
+      final saved = prefs.getString(_prefKey);
+      if (saved == null || saved.isEmpty || saved == '192.168.1.23:5050') {
+        _host = defaultHost;
+        await prefs.setString(_prefKey, defaultHost);
+      } else {
+        _host = saved;
+      }
+    } catch (_) {
+      _host = defaultHost;
+    }
   }
 
   Future<String> getHost() async {
-    final prefs = await SharedPreferences.getInstance();
-    _host = prefs.getString(_prefKey) ?? defaultHost;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final saved = prefs.getString(_prefKey);
+      if (saved == null || saved.isEmpty || saved == '192.168.1.23:5050') {
+        _host = defaultHost;
+      } else {
+        _host = saved;
+      }
+    } catch (_) {
+      _host = defaultHost;
+    }
     return _host;
   }
 

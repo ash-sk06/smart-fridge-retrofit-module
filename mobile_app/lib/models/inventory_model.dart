@@ -156,6 +156,22 @@ class FridgeStatus {
       alerts: alertsRaw.map((e) => e.toString()).toList(),
     );
   }
+
+  factory FridgeStatus.defaultInitial() {
+    return FridgeStatus(
+      fridgeName: 'Smart Retrofit Refrigerator',
+      hardwareMode: 'Cloud AI Vision Inference',
+      hardwareConnected: true,
+      lastSync: 'Live',
+      doorState: 'CLOSED',
+      doorOpenDurationSec: 0,
+      temperatureC: 3.8,
+      humidityPct: 62,
+      shelfMassG: 1575.0,
+      maxRatedShelfG: 10000.0,
+      alerts: [],
+    );
+  }
 }
 
 class SensorDiagnostic {
@@ -303,6 +319,59 @@ class FridgeInventoryState {
       inventory: items,
       telemetry: telemetry,
       shoppingList: shopping,
+    );
+  }
+
+  factory FridgeInventoryState.defaultInitial() {
+    return FridgeInventoryState(
+      inventory: {
+        'zone1': InventoryItem(
+          zoneId: 'zone1',
+          itemName: 'Pasteurized Whole Milk',
+          category: 'Dairy',
+          currentWeight: 1045.0,
+          tareWeight: 45.0,
+          fullVolume: 1000.0,
+          fillPercentage: 100.0,
+          remainingVolume: 1000.0,
+          status: 'OPTIMAL',
+          expiryDate: '2026-09-29',
+          daysToExpiry: 7,
+          lastUpdated: 'Just now',
+        ),
+        'zone2': InventoryItem(
+          zoneId: 'zone2',
+          itemName: 'Fresh Orange Juice',
+          category: 'Beverages',
+          currentWeight: 530.0,
+          tareWeight: 30.0,
+          fullVolume: 500.0,
+          fillPercentage: 100.0,
+          remainingVolume: 500.0,
+          status: 'OPTIMAL',
+          expiryDate: '2026-10-04',
+          daysToExpiry: 12,
+          lastUpdated: 'Just now',
+        ),
+      },
+      telemetry: TelemetryData(
+        doorState: 'CLOSED',
+        temperatureC: 3.8,
+        humidityPct: 62,
+        lastDeltaDairy: 0.0,
+        lastDeltaDrinks: 0.0,
+        latestImagePath: '/static/placeholder.jpg',
+        detectedObjects: ['milk_carton', 'juice_bottle'],
+      ),
+      shoppingList: [
+        ShoppingItem(
+          id: 1,
+          itemName: 'Cheddar Cheese Block',
+          reason: 'Expiring in 2 days (YOLO detected)',
+          isBought: false,
+          addedAt: 'Yesterday',
+        ),
+      ],
     );
   }
 }

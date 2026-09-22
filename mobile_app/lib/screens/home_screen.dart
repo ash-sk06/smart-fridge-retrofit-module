@@ -18,8 +18,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final FridgeApiService _apiService = FridgeApiService();
   int _currentTabIndex = 0;
 
-  FridgeStatus? _status;
-  FridgeInventoryState? _state;
+  FridgeStatus? _status = FridgeStatus.defaultInitial();
+  FridgeInventoryState? _state = FridgeInventoryState.defaultInitial();
   List<SensorDiagnostic> _sensors = [];
   List<ActivityEvent> _activity = [];
   DeviceSettings? _settings;
@@ -62,8 +62,8 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!mounted) return;
       setState(() {
         if (status != null || inventory != null) {
-          _status = status;
-          _state = inventory;
+          if (status != null) _status = status;
+          if (inventory != null) _state = inventory;
           _isConnected = true;
         } else {
           _isConnected = false;
@@ -149,8 +149,60 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _simulateLocalResetFull() {
+    setState(() {
+      _state = FridgeInventoryState.defaultInitial();
+      _status = FridgeStatus.defaultInitial();
+    });
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('✨ Reset Complete! All containers restored to 100% full capacity.'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Color(0xFF10B981),
+        ),
+      );
+    }
+    _apiService.triggerSimulation('reset_full').then((_) => _refreshAll(silent: true));
+  }
+
+  void _simulateLocalToggleDoor() {
+    _state ??= FridgeInventoryState.defaultInitial();
+    _status ??= FridgeStatus.defaultInitial();
+    final currentDoor = _state!.telemetry.doorState;
+    final nextDoor = currentDoor == 'CLOSED' ? 'OPEN' : 'CLOSED';
+
+    setState(() {
+      _state = FridgeInventoryState(
+        inventory: _state!.inventory,
+        telemetry: TelemetryData(
+          doorState: nextDoor,
+          temperatureC: nextDoor == 'OPEN' ? 6.2 : 3.8,
+          humidityPct: nextDoor == 'OPEN' ? 76 : 62,
+          lastDeltaDairy: _state!.telemetry.lastDeltaDairy,
+          lastDeltaDrinks: _state!.telemetry.lastDeltaDrinks,
+          latestImagePath: _state!.telemetry.latestImagePath,
+          detectedObjects: _state!.telemetry.detectedObjects,
+        ),
+        shoppingList: _state!.shoppingList,
+      );
+    });
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(nextDoor == 'OPEN' ? '🚪 Door OPENED! Hall sensor triggered & strobe active.' : '🚪 Door CLOSED. Vision scan triggered.'),
+          duration: const Duration(seconds: 2),
+          backgroundColor: nextDoor == 'OPEN' ? const Color(0xFFF59E0B) : const Color(0xFF10B981),
+        ),
+      );
+    }
+    final simAction = nextDoor == 'OPEN' ? 'door_open' : 'door_close';
+    _apiService.triggerSimulation(simAction).then((_) => _refreshAll(silent: true));
+  }
+
   void _simulateLocalPour(String zoneId, double deltaWeight) {
-    if (_state == null) return;
+    _state ??= FridgeInventoryState.defaultInitial();
     final item = _state!.inventory[zoneId];
     if (item != null) {
       setState(() {
@@ -168,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _state!.shoppingList.insert(0, ShoppingItem(
             id: DateTime.now().millisecondsSinceEpoch,
             itemName: item.itemName,
-            reason: 'LOW_STOCK (< 20%)',
+            reason: 'AUTO-REORDER: Low Stock (${fillPct.toInt()}%)',
             isBought: false,
             addedAt: 'Just now',
           ));
@@ -177,29 +229,30 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Poured ${deltaWeight.abs().toInt()}ml from ${item.itemName}. Remaining: ${item.remainingVolume.toInt()}ml (${item.fillPercentage.toInt()}%)'),
+            content: Text('🥛 Poured ${deltaWeight.abs().toInt()}ml from ${item.itemName} (${item.fillPercentage.toInt()}% remaining)'),
             duration: const Duration(seconds: 2),
             backgroundColor: const Color(0xFF06B6D4),
           ),
         );
       }
     }
+    _apiService.simulatePour(zoneId, deltaWeight).then((_) => _refreshAll(silent: true));
   }
 
   void _simulateLocalLowStock(String zoneId) {
-    if (_state == null) return;
+    _state ??= FridgeInventoryState.defaultInitial();
     final item = _state!.inventory[zoneId];
     if (item != null) {
       setState(() {
         item.currentWeight = zoneId == 'zone1' ? 195.0 : 110.0;
-        item.remainingVolume = zoneId == 'zone1' ? 150.0 : 80.0;
-        item.fillPercentage = zoneId == 'zone1' ? 15.0 : 16.0;
+        item.remainingVolume = zoneId == 'zone1' ? 145.0 : 75.0;
+        item.fillPercentage = zoneId == 'zone1' ? 15.0 : 15.0;
         item.status = 'LOW_STOCK';
         if (!_state!.shoppingList.any((s) => s.itemName.contains(item.itemName))) {
           _state!.shoppingList.insert(0, ShoppingItem(
             id: DateTime.now().millisecondsSinceEpoch,
             itemName: item.itemName,
-            reason: 'LOW_STOCK (< 20%)',
+            reason: 'AUTO-REORDER: Low Stock (15%)',
             isBought: false,
             addedAt: 'Just now',
           ));
@@ -208,13 +261,14 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('LOW STOCK TRIGGERED! ${item.itemName} at ${item.fillPercentage.toInt()}%. Added to shopping list.'),
+            content: Text('🚨 LOW STOCK ALERT: ${item.itemName} at 15%! Auto-reorder queued.'),
             duration: const Duration(seconds: 2),
             backgroundColor: const Color(0xFFEF4444),
           ),
         );
       }
     }
+    _apiService.triggerLowStock(zoneId).then((_) => _refreshAll(silent: true));
   }
 
   Widget _buildDemoChip(String label, VoidCallback onTap, {bool isAlert = false, bool isSuccess = false}) {
@@ -446,10 +500,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 runSpacing: 10,
                 children: [
                   ElevatedButton.icon(
-                    onPressed: () async {
-                      await _apiService.triggerSimulation('drink_milk');
-                      _refreshAll();
+                    onPressed: () {
                       if (context.mounted) Navigator.pop(context);
+                      _simulateLocalPour('zone1', -150.0);
                     },
                     icon: const Text('🥛'),
                     label: const Text('Pour 150ml Milk'),
@@ -459,10 +512,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   ElevatedButton.icon(
-                    onPressed: () async {
-                      await _apiService.simulatePour('zone2', -120.0);
-                      _refreshAll();
+                    onPressed: () {
                       if (context.mounted) Navigator.pop(context);
+                      _simulateLocalPour('zone2', -120.0);
                     },
                     icon: const Text('🍊'),
                     label: const Text('Pour 120ml Juice'),
@@ -472,10 +524,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   ElevatedButton.icon(
-                    onPressed: () async {
-                      await _apiService.triggerSimulation('drink_both');
-                      _refreshAll();
+                    onPressed: () {
                       if (context.mounted) Navigator.pop(context);
+                      _simulateLocalPour('zone1', -150.0);
+                      _simulateLocalPour('zone2', -120.0);
                     },
                     icon: const Icon(Icons.local_drink, size: 16, color: Color(0xFF06B6D4)),
                     label: const Text('Pour Both'),
@@ -485,12 +537,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   ElevatedButton.icon(
-                    onPressed: () async {
-                      final currentDoor = _status?.doorState ?? 'CLOSED';
-                      final next = currentDoor == 'CLOSED' ? 'door_open' : 'door_close';
-                      await _apiService.triggerSimulation(next);
-                      _refreshAll();
+                    onPressed: () {
                       if (context.mounted) Navigator.pop(context);
+                      _simulateLocalToggleDoor();
                     },
                     icon: const Icon(Icons.sensor_door_outlined, size: 16, color: Color(0xFFF59E0B)),
                     label: const Text('Toggle Door Event'),
@@ -500,23 +549,33 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   ElevatedButton.icon(
-                    onPressed: () async {
-                      await _apiService.triggerSimulation('low_stock_milk');
-                      _refreshAll();
+                    onPressed: () {
                       if (context.mounted) Navigator.pop(context);
+                      _simulateLocalLowStock('zone1');
                     },
                     icon: const Icon(Icons.warning_amber_rounded, size: 16, color: Color(0xFFEF4444)),
-                    label: const Text('Trigger Low Stock (<20%)'),
+                    label: const Text('Low Stock Milk (<20%)'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFEF4444).withOpacity(0.2),
                       foregroundColor: const Color(0xFFEF4444),
                     ),
                   ),
                   ElevatedButton.icon(
-                    onPressed: () async {
-                      await _apiService.triggerSimulation('reset_full');
-                      _refreshAll();
+                    onPressed: () {
                       if (context.mounted) Navigator.pop(context);
+                      _simulateLocalLowStock('zone2');
+                    },
+                    icon: const Icon(Icons.warning_amber_rounded, size: 16, color: Color(0xFFEF4444)),
+                    label: const Text('Low Stock Juice (<20%)'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFEF4444).withOpacity(0.2),
+                      foregroundColor: const Color(0xFFEF4444),
+                    ),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      if (context.mounted) Navigator.pop(context);
+                      _simulateLocalResetFull();
                     },
                     icon: const Icon(Icons.replay_rounded, size: 16, color: Color(0xFF10B981)),
                     label: const Text('Reset All Full (100%)'),
@@ -563,15 +622,52 @@ class _HomeScreenState extends State<HomeScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Server Host / IP:Port',
                   labelStyle: TextStyle(color: Color(0xFF94A3B8)),
-                  hintText: 'e.g. 192.168.1.105:5050',
+                  hintText: 'e.g. smart-fridge-retrofit-module.onrender.com',
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.router, color: Color(0xFF64748B)),
                 ),
               ),
+              const SizedBox(height: 10),
+              const Text('Quick Connection Presets:',
+                  style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8), fontWeight: FontWeight.bold)),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        controller.text = 'smart-fridge-retrofit-module.onrender.com';
+                      },
+                      icon: const Icon(Icons.cloud_outlined, size: 14),
+                      label: const Text('Live Cloud', style: TextStyle(fontSize: 11)),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color(0xFF38BDF8),
+                        side: const BorderSide(color: Color(0xFF0284C7)),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        controller.text = '192.168.1.23:5050';
+                      },
+                      icon: const Icon(Icons.laptop_chromebook, size: 14),
+                      label: const Text('Local Host', style: TextStyle(fontSize: 11)),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color(0xFFA78BFA),
+                        side: const BorderSide(color: Color(0xFF7C3AED)),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: 8),
               const Text(
-                'Tip: Use your laptop IP or smart-fridge-retrofit-module.onrender.com',
-                style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                'Tip: Cloud uses secure HTTPS; Local uses HTTP port 5050.',
+                style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
               ),
             ],
           ),
@@ -762,11 +858,7 @@ class _HomeScreenState extends State<HomeScreen> {
           telemetry: telemetry,
           isConnected: _isConnected,
           isScanning: _isScanning,
-          onToggleDoor: () async {
-            final next = telemetry.doorState == 'CLOSED' ? 'door_open' : 'door_close';
-            await _apiService.triggerSimulation(next);
-            _refreshAll();
-          },
+          onToggleDoor: () => _simulateLocalToggleDoor(),
           onScanNow: _triggerScan,
           onTareScale: _calibrateScales,
         ),
@@ -810,33 +902,28 @@ class _HomeScreenState extends State<HomeScreen> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _buildDemoChip('🥛 Pour 150ml Milk', () async {
+                    _buildDemoChip('🥛 Pour 150ml Milk', () {
                       _simulateLocalPour('zone1', -150.0);
-                      await _apiService.simulatePour('zone1', -150.0);
-                      _refreshAll();
                     }),
                     const SizedBox(width: 6),
-                    _buildDemoChip('🍊 Pour 120ml Juice', () async {
+                    _buildDemoChip('🍊 Pour 120ml Juice', () {
                       _simulateLocalPour('zone2', -120.0);
-                      await _apiService.simulatePour('zone2', -120.0);
-                      _refreshAll();
                     }),
                     const SizedBox(width: 6),
-                    _buildDemoChip('🚨 Trigger Low Stock (<20%)', () async {
+                    _buildDemoChip('🚨 Low Stock Milk', () {
                       _simulateLocalLowStock('zone1');
-                      await _apiService.triggerSimulation('low_stock_milk');
-                      _refreshAll();
                     }, isAlert: true),
                     const SizedBox(width: 6),
-                    _buildDemoChip('🚪 Toggle Door Event', () async {
-                      final next = telemetry.doorState == 'CLOSED' ? 'door_open' : 'door_close';
-                      await _apiService.triggerSimulation(next);
-                      _refreshAll();
+                    _buildDemoChip('🚨 Low Stock Juice', () {
+                      _simulateLocalLowStock('zone2');
+                    }, isAlert: true),
+                    const SizedBox(width: 6),
+                    _buildDemoChip('🚪 Toggle Door', () {
+                      _simulateLocalToggleDoor();
                     }),
                     const SizedBox(width: 6),
-                    _buildDemoChip('🔄 Reset All 100%', () async {
-                      await _apiService.triggerSimulation('reset_full');
-                      _refreshAll();
+                    _buildDemoChip('🔄 Reset All 100%', () {
+                      _simulateLocalResetFull();
                     }, isSuccess: true),
                   ],
                 ),
@@ -863,16 +950,8 @@ class _HomeScreenState extends State<HomeScreen> {
           LiquidGaugeCard(
             item: zone1,
             iconEmoji: '🥛',
-            onPour: () async {
-              _simulateLocalPour('zone1', -150.0);
-              await _apiService.simulatePour('zone1', -150.0);
-              _refreshAll();
-            },
-            onLowStock: () async {
-              _simulateLocalLowStock('zone1');
-              await _apiService.triggerSimulation('low_stock_milk');
-              _refreshAll();
-            },
+            onPour: () => _simulateLocalPour('zone1', -150.0),
+            onLowStock: () => _simulateLocalLowStock('zone1'),
             onCalibrate: () => _showCalibrateDialog(zone1),
           ),
 
@@ -880,16 +959,8 @@ class _HomeScreenState extends State<HomeScreen> {
           LiquidGaugeCard(
             item: zone2,
             iconEmoji: '🍊',
-            onPour: () async {
-              _simulateLocalPour('zone2', -120.0);
-              await _apiService.simulatePour('zone2', -120.0);
-              _refreshAll();
-            },
-            onLowStock: () async {
-              _simulateLocalLowStock('zone2');
-              await _apiService.triggerSimulation('low_stock_juice');
-              _refreshAll();
-            },
+            onPour: () => _simulateLocalPour('zone2', -120.0),
+            onLowStock: () => _simulateLocalLowStock('zone2'),
             onCalibrate: () => _showCalibrateDialog(zone2),
           ),
 
@@ -933,19 +1004,24 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.all(16),
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Container Calibrations',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+            const Expanded(
+              child: Text(
+                'Container Calibrations',
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
+            const SizedBox(width: 8),
             OutlinedButton.icon(
               onPressed: _calibrateScales,
               icon: const Icon(Icons.exposure_zero, size: 14),
-              label: const Text('Tare All Channels', style: TextStyle(fontSize: 12)),
+              label: const Text('Tare Scales', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
               style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 foregroundColor: const Color(0xFF10B981),
                 side: const BorderSide(color: Color(0xFF10B981)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               ),
             ),
           ],
@@ -969,16 +1045,12 @@ class _HomeScreenState extends State<HomeScreen> {
             return LiquidGaugeCard(
               item: item,
               iconEmoji: item.zoneId == 'zone1' ? '🥛' : '🍊',
-              onPour: () async {
+              onPour: () {
                 final delta = item.zoneId == 'zone1' ? -150.0 : -120.0;
                 _simulateLocalPour(item.zoneId, delta);
-                await _apiService.simulatePour(item.zoneId, delta);
-                _refreshAll();
               },
-              onLowStock: () async {
+              onLowStock: () {
                 _simulateLocalLowStock(item.zoneId);
-                await _apiService.triggerLowStock(item.zoneId);
-                _refreshAll();
               },
               onCalibrate: () => _showCalibrateDialog(item),
             );

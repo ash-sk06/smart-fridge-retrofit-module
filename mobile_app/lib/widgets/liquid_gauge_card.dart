@@ -212,92 +212,117 @@ class LiquidGaugeCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            // Expiry & Weight Details
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Load: ${item.currentWeight.toStringAsFixed(1)}g (Tare: ${item.tareWeight.toStringAsFixed(0)}g)',
-                      style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
-                    ),
-                    const SizedBox(height: 2),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.calendar_today_outlined,
-                          size: 12,
-                          color: isExpiringSoon
-                              ? const Color(0xFFEF4444)
-                              : const Color(0xFF64748B),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'Expires: ${item.expiryDate} (${item.daysToExpiry}d left)',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: isExpiringSoon ? FontWeight.bold : FontWeight.normal,
-                            color: isExpiringSoon
-                                ? const Color(0xFFEF4444)
-                                : const Color(0xFF94A3B8),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 4,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    if (onCalibrate != null)
-                      IconButton(
-                        onPressed: onCalibrate,
-                        icon: const Icon(Icons.tune, size: 18),
-                        tooltip: 'Calibrate Container',
-                        style: IconButton.styleFrom(
-                          foregroundColor: const Color(0xFF94A3B8),
-                          backgroundColor: const Color(0xFF0F172A),
+            // Metadata Chip: Weight and Expiry
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: BoxDecoration(
+                color: const Color(0xFF0F172A),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: const Color(0xFF1E293B)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Load: ${item.currentWeight.toStringAsFixed(1)}g (Tare: ${item.tareWeight.toStringAsFixed(0)}g)',
+                    style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8), fontWeight: FontWeight.w500),
+                  ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_today_outlined,
+                        size: 11,
+                        color: isExpiringSoon ? const Color(0xFFEF4444) : const Color(0xFF64748B),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${item.expiryDate} (${item.daysToExpiry}d)',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: isExpiringSoon ? FontWeight.bold : FontWeight.w500,
+                          color: isExpiringSoon ? const Color(0xFFEF4444) : const Color(0xFF94A3B8),
                         ),
                       ),
-                    if (onPour != null)
-                      ElevatedButton.icon(
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+
+            // Action Buttons Row: Pour, Low Stock, Calibrate
+            if (onPour != null || onLowStock != null || onCalibrate != null)
+              Row(
+                children: [
+                  if (onPour != null)
+                    Expanded(
+                      flex: 5,
+                      child: ElevatedButton.icon(
                         onPressed: onPour,
-                        icon: const Icon(Icons.local_drink_outlined, size: 13),
+                        icon: const Icon(Icons.local_drink_outlined, size: 14),
                         label: Text(
                           item.zoneId == 'zone1' ? 'Pour 150ml' : 'Pour 120ml',
-                          style: const TextStyle(fontSize: 11),
+                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                          padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 8),
                           backgroundColor: const Color(0xFF1E293B),
                           foregroundColor: const Color(0xFFE2E8F0),
                           elevation: 0,
                           side: const BorderSide(color: Color(0xFF334155)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                       ),
-                    if (onLowStock != null)
-                      ElevatedButton.icon(
+                    ),
+                  if (onPour != null && onLowStock != null)
+                    const SizedBox(width: 8),
+                  if (onLowStock != null)
+                    Expanded(
+                      flex: 4,
+                      child: ElevatedButton.icon(
                         onPressed: onLowStock,
-                        icon: const Icon(Icons.warning_amber_rounded, size: 13, color: Color(0xFFEF4444)),
+                        icon: const Icon(Icons.warning_amber_rounded, size: 14, color: Color(0xFFEF4444)),
                         label: const Text(
                           'Low Stock',
-                          style: TextStyle(fontSize: 11, color: Color(0xFFEF4444), fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 12, color: Color(0xFFEF4444), fontWeight: FontWeight.bold),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                          padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 8),
                           backgroundColor: const Color(0xFFEF4444).withOpacity(0.15),
                           elevation: 0,
                           side: BorderSide(color: const Color(0xFFEF4444).withOpacity(0.4)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                       ),
+                    ),
+                  if (onCalibrate != null) ...[
+                    const SizedBox(width: 8),
+                    Container(
+                      height: 38,
+                      width: 38,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF0F172A),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: const Color(0xFF334155)),
+                      ),
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: onCalibrate,
+                        icon: const Icon(Icons.tune, size: 18, color: Color(0xFF94A3B8)),
+                        tooltip: 'Calibrate Container',
+                      ),
+                    ),
                   ],
-                ),
-              ],
-            ),
+                ],
+              ),
           ],
         ),
       ),
