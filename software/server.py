@@ -169,7 +169,7 @@ active_state = {
     "detected_objects": ["Whole Milk in Zone 1 (Dairy)", "Orange Juice in Zone 2 (Beverage)"],
     "last_hardware_ping": None,
     "is_hardware_active": False,
-    "ai_status": "YOLOv8n Active (38ms CPU)"
+    "ai_status": "YOLOv8n Cloud Active (42ms Cloud Host)"
 }
 
 # Lazy Load YOLO
@@ -371,9 +371,10 @@ def get_sensors():
             "status": "ARMED / READY"
         },
         "ai_engine": {
-            "model": "Ultralytics YOLOv8n",
+            "model": "Ultralytics YOLOv8n (Cloud Hosted)",
+            "deployment": "Cloud / Server Inference",
             "classes_tracked": ["bottle", "carton", "egg", "container"],
-            "latency_ms": 38,
+            "latency_ms": 42,
             "status": "ACTIVE"
         },
         "sensors": [
@@ -423,13 +424,13 @@ def get_sensors():
                 "last_reading": "Armed"
             },
             {
-                "id": "edge_yolo",
-                "name": "Ultralytics YOLOv8n Engine",
-                "type": "Edge Vision Inference",
+                "id": "cloud_yolo",
+                "name": "Ultralytics YOLOv8n Cloud Engine",
+                "type": "Cloud AI Vision Inference",
                 "status": "ACTIVE",
-                "value": "38ms Latency",
-                "detail": "Classes: bottle, carton, egg, container",
-                "last_reading": "Edge Accelerated"
+                "value": "Cloud Ingest ~42ms",
+                "detail": "Zero In-Fridge Heat • Classes: bottle, carton, container",
+                "last_reading": "Cloud Accelerated"
             }
         ]
     })

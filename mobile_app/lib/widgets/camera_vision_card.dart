@@ -183,10 +183,10 @@ class CameraVisionCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Icon(Icons.auto_awesome, size: 14, color: Color(0xFFA78BFA)),
+                const Icon(Icons.cloud_outlined, size: 14, color: Color(0xFF06B6D4)),
                 const SizedBox(width: 6),
                 const Text(
-                  'YOLOv8 Edge Engine:',
+                  'YOLOv8 Cloud Engine:',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
