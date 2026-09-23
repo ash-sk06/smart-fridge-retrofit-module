@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: smart-fridge-retrofit
+    runtime: python
+    rootDir: software
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn server:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: PORT
+        value: 10000

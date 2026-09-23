@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="juiceCap" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#EA580C"/>
+      <stop offset="50%" stop-color="#FB923C"/>
+      <stop offset="100%" stop-color="#C2410C"/>
+    </linearGradient>
+    <linearGradient id="juiceLiquid" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F97316"/>
+      <stop offset="40%" stop-color="#FB923C"/>
+      <stop offset="100%" stop-color="#EA580C"/>
+    </linearGradient>
+    <linearGradient id="glassJuice" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.6"/>
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#CBD5E1" stop-opacity="0.4"/>
+    </linearGradient>
+    <filter id="itemShadow" x="-20%" y="-10%" width="140%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0F172A" flood-opacity="0.08"/>
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.04"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#itemShadow)">
+    <!-- Cap -->
+    <rect x="65" y="18" width="30" height="14" rx="4" fill="url(#juiceCap)"/>
+    <rect x="68" y="16" width="24" height="4" rx="2" fill="#FDBA74"/>
+
+    <!-- Bottle Body -->
+    <path d="M 68 32 L 68 45 L 48 65 L 48 170 C 48 178 54 184 62 184 L 98 184 C 106 184 112 178 112 170 L 112 65 L 92 32 Z" fill="#FFF7ED" stroke="#E2E8F0" stroke-width="1.5"/>
+
+    <!-- Orange Juice Liquid Core -->
+    <path d="M 50 85 L 110 85 L 110 168 C 110 174 105 180 98 180 L 62 180 C 55 180 50 174 50 168 Z" fill="url(#juiceLiquid)"/>
+
+    <!-- Liquid Top Wave meniscus -->
+    <path d="M 50 85 Q 65 82 80 85 Q 95 88 110 85" fill="none" stroke="#FDBA74" stroke-width="2"/>
+
+    <!-- Label -->
+    <rect x="54" y="105" width="52" height="42" rx="6" fill="#FFFFFF" fill-opacity="0.95" stroke="#FDBA74" stroke-width="1"/>
+    <!-- Orange Slice Icon -->
+    <circle cx="80" cy="120" r="8" fill="#F97316"/>
+    <circle cx="80" cy="120" r="6" fill="#FDBA74"/>
+    <circle cx="80" cy="120" r="1.5" fill="#FFFFFF"/>
+    <text x="80" y="137" font-family="-apple-system, sans-serif" font-size="7.5" font-weight="800" fill="#EA580C" text-anchor="middle" letter-spacing="0.5">ORANGE</text>
+
+    <!-- Reflection highlight on left edge -->
+    <path d="M 54 68 L 54 170" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+  </g>
+</svg>

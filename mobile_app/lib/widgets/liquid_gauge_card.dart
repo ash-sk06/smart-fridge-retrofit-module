@@ -26,13 +26,13 @@ class LiquidGaugeCard extends StatelessWidget {
   Color _getLiquidGradientStart(double pct) {
     if (pct < 20.0) return const Color(0xFFEF4444);
     if (pct < 45.0) return const Color(0xFFF59E0B);
-    return const Color(0xFF06B6D4);
+    return const Color(0xFF3B82F6);
   }
 
   Color _getLiquidGradientEnd(double pct) {
-    if (pct < 20.0) return const Color(0xFFB91C1C);
+    if (pct < 20.0) return const Color(0xFFDC2626);
     if (pct < 45.0) return const Color(0xFFD97706);
-    return const Color(0xFF3B82F6);
+    return const Color(0xFF2563EB);
   }
 
   @override
@@ -44,21 +44,20 @@ class LiquidGaugeCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: const Color(0xFF131B2E),
-        borderRadius: BorderRadius.circular(16),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isLow
-              ? const Color(0xFFEF4444).withOpacity(0.6)
-              : const Color(0xFF1E293B),
+              ? const Color(0xFFEF4444).withValues(alpha: 0.6)
+              : const Color(0xFFE2E8F0),
           width: isLow ? 1.5 : 1,
         ),
-        boxShadow: [
-          if (isLow)
-            BoxShadow(
-              color: const Color(0xFFEF4444).withOpacity(0.15),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x080F172A),
+            blurRadius: 16,
+            offset: Offset(0, 4),
+          ),
         ],
       ),
       child: Padding(
@@ -72,9 +71,9 @@ class LiquidGaugeCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0F172A),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFF334155)),
+                    color: const Color(0xFFF8FAFC),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
                   ),
                   child: Text(
                     iconEmoji,
@@ -92,8 +91,9 @@ class LiquidGaugeCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFF8FAFC),
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF0F172A),
+                          letterSpacing: -0.2,
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -103,7 +103,8 @@ class LiquidGaugeCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 12,
-                          color: Color(0xFF94A3B8),
+                          color: Color(0xFF64748B),
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
@@ -114,7 +115,7 @@ class LiquidGaugeCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.15),
+                    color: statusColor.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: statusColor, width: 1),
                   ),
@@ -130,7 +131,7 @@ class LiquidGaugeCard extends StatelessWidget {
                         style: TextStyle(
                           color: statusColor,
                           fontSize: 11,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w800,
                         ),
                       ),
                     ],
@@ -147,9 +148,9 @@ class LiquidGaugeCard extends StatelessWidget {
                 Container(
                   height: 32,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0B1120),
+                    color: const Color(0xFFF1F5F9),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: const Color(0xFF1E293B)),
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
                   ),
                 ),
                 // Animated Liquid Fill Bar
@@ -171,7 +172,7 @@ class LiquidGaugeCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                         boxShadow: [
                           BoxShadow(
-                            color: statusColor.withOpacity(0.4),
+                            color: statusColor.withValues(alpha: 0.3),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -194,7 +195,7 @@ class LiquidGaugeCard extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                             shadows: [
-                              Shadow(blurRadius: 4, color: Colors.black87),
+                              Shadow(blurRadius: 4, color: Colors.black45),
                             ],
                           ),
                         ),
@@ -205,7 +206,7 @@ class LiquidGaugeCard extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
                             shadows: [
-                              Shadow(blurRadius: 4, color: Colors.black87),
+                              Shadow(blurRadius: 4, color: Colors.black45),
                             ],
                           ),
                         ),
@@ -219,18 +220,18 @@ class LiquidGaugeCard extends StatelessWidget {
 
             // Metadata Chip: Weight and Expiry
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFF0F172A),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFF1E293B)),
+                color: const Color(0xFFF8FAFC),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: const Color(0xFFE2E8F0)),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Load: ${item.currentWeight.toStringAsFixed(1)}g (Tare: ${item.tareWeight.toStringAsFixed(0)}g)',
-                    style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8), fontWeight: FontWeight.w500),
+                    style: const TextStyle(fontSize: 11, color: Color(0xFF475569), fontWeight: FontWeight.w600),
                   ),
                   Row(
                     children: [
@@ -244,8 +245,8 @@ class LiquidGaugeCard extends StatelessWidget {
                         '${item.expiryDate} (${item.daysToExpiry}d)',
                         style: TextStyle(
                           fontSize: 11,
-                          fontWeight: isExpiringSoon ? FontWeight.bold : FontWeight.w500,
-                          color: isExpiringSoon ? const Color(0xFFEF4444) : const Color(0xFF94A3B8),
+                          fontWeight: isExpiringSoon ? FontWeight.bold : FontWeight.w600,
+                          color: isExpiringSoon ? const Color(0xFFEF4444) : const Color(0xFF64748B),
                         ),
                       ),
                     ],
@@ -253,7 +254,7 @@ class LiquidGaugeCard extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
 
             // Action Buttons Row: Pour, Low Stock, Calibrate
             if (onPour != null || onLowStock != null || onCalibrate != null)
@@ -273,12 +274,12 @@ class LiquidGaugeCard extends StatelessWidget {
                         ),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 8),
-                          backgroundColor: const Color(0xFF1E293B),
-                          foregroundColor: const Color(0xFFE2E8F0),
+                          backgroundColor: const Color(0xFFF1F5F9),
+                          foregroundColor: const Color(0xFF1E293B),
                           elevation: 0,
-                          side: const BorderSide(color: Color(0xFF334155)),
+                          side: const BorderSide(color: Color(0xFFCBD5E1)),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
@@ -290,20 +291,20 @@ class LiquidGaugeCard extends StatelessWidget {
                       flex: 4,
                       child: ElevatedButton.icon(
                         onPressed: onLowStock,
-                        icon: const Icon(Icons.warning_amber_rounded, size: 14, color: Color(0xFFEF4444)),
+                        icon: const Icon(Icons.warning_amber_rounded, size: 14, color: Color(0xFFDC2626)),
                         label: const Text(
                           'Low Stock',
-                          style: TextStyle(fontSize: 12, color: Color(0xFFEF4444), fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 12, color: Color(0xFFDC2626), fontWeight: FontWeight.bold),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 8),
-                          backgroundColor: const Color(0xFFEF4444).withOpacity(0.15),
+                          backgroundColor: const Color(0xFFFEF2F2),
                           elevation: 0,
-                          side: BorderSide(color: const Color(0xFFEF4444).withOpacity(0.4)),
+                          side: const BorderSide(color: Color(0xFFFCA5A5)),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
@@ -314,14 +315,14 @@ class LiquidGaugeCard extends StatelessWidget {
                       height: 38,
                       width: 38,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0F172A),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: const Color(0xFF334155)),
+                        color: const Color(0xFFF1F5F9),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: const Color(0xFFCBD5E1)),
                       ),
                       child: IconButton(
                         padding: EdgeInsets.zero,
                         onPressed: onCalibrate,
-                        icon: const Icon(Icons.tune, size: 18, color: Color(0xFF94A3B8)),
+                        icon: const Icon(Icons.tune, size: 18, color: Color(0xFF475569)),
                         tooltip: 'Calibrate Container',
                       ),
                     ),

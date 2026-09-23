@@ -576,6 +576,26 @@ class _HomeScreenState extends State<HomeScreen> {
     _apiService.triggerLowStock(zoneId).then((_) => _refreshAll(silent: true));
   }
 
+  String _getTimeGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Good Morning, Arya 👋';
+    if (hour < 17) return 'Good Afternoon, Arya 👋';
+    return 'Good Evening, Arya 👋';
+  }
+
+  String _getItemEmoji(String zoneId, String name) {
+    final lower = name.toLowerCase();
+    if (lower.contains('milk')) return '🥛';
+    if (lower.contains('juice') || lower.contains('orange')) return '🍊';
+    if (lower.contains('egg')) return '🥚';
+    if (lower.contains('tomato')) return '🍅';
+    if (lower.contains('apple')) return '🍏';
+    if (lower.contains('yogurt')) return '🥣';
+    if (lower.contains('cheese')) return '🧀';
+    if (lower.contains('soda') || lower.contains('coke') || lower.contains('can')) return '🥤';
+    return '📦';
+  }
+
   Widget _buildDemoChip(
     String label,
     VoidCallback onTap, {
@@ -583,29 +603,29 @@ class _HomeScreenState extends State<HomeScreen> {
     bool isSuccess = false,
     bool isExpanded = false,
   }) {
-    Color bg = const Color(0xFF1E293B);
-    Color fg = const Color(0xFFE2E8F0);
-    Color border = const Color(0xFF334155);
+    Color bg = const Color(0xFFF1F5F9);
+    Color fg = const Color(0xFF334155);
+    Color border = const Color(0xFFE2E8F0);
 
     if (isAlert) {
-      bg = const Color(0xFFEF4444).withOpacity(0.18);
-      fg = const Color(0xFFEF4444);
-      border = const Color(0xFFEF4444).withOpacity(0.4);
+      bg = const Color(0xFFFEE2E2);
+      fg = const Color(0xFFDC2626);
+      border = const Color(0xFFFCA5A5);
     } else if (isSuccess) {
-      bg = const Color(0xFF10B981).withOpacity(0.18);
-      fg = const Color(0xFF10B981);
-      border = const Color(0xFF10B981).withOpacity(0.4);
+      bg = const Color(0xFFDCFCE7);
+      fg = const Color(0xFF16A34A);
+      border = const Color(0xFF86EFAC);
     }
 
     final chip = InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(10),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: bg,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(10),
           border: Border.all(color: border),
         ),
         child: Text(
@@ -613,7 +633,7 @@ class _HomeScreenState extends State<HomeScreen> {
           textAlign: TextAlign.center,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: fg),
+          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: fg),
         ),
       ),
     );
@@ -633,13 +653,21 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF131B2E),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
-            const Icon(Icons.tune, color: Color(0xFF10B981), size: 20),
-            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: const Color(0xFF10B981).withOpacity(0.12),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(Icons.tune, color: Color(0xFF10B981), size: 20),
+            ),
+            const SizedBox(width: 10),
             Text('Calibrate ${item.zoneId.toUpperCase()}',
-                style: const TextStyle(color: Colors.white, fontSize: 16)),
+                style: const TextStyle(color: Color(0xFF0F172A), fontSize: 16, fontWeight: FontWeight.bold)),
           ],
         ),
         content: SingleChildScrollView(
@@ -648,42 +676,42 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               TextField(
                 controller: nameCtrl,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Color(0xFF0F172A)),
                 decoration: const InputDecoration(
                   labelText: 'Item Name',
-                  labelStyle: TextStyle(color: Color(0xFF94A3B8)),
+                  labelStyle: TextStyle(color: Color(0xFF64748B)),
                   border: OutlineInputBorder(),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               TextField(
                 controller: volCtrl,
                 keyboardType: TextInputType.number,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Color(0xFF0F172A)),
                 decoration: const InputDecoration(
                   labelText: 'Full Rated Volume (ml)',
-                  labelStyle: TextStyle(color: Color(0xFF94A3B8)),
+                  labelStyle: TextStyle(color: Color(0xFF64748B)),
                   border: OutlineInputBorder(),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               TextField(
                 controller: tareCtrl,
                 keyboardType: TextInputType.number,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Color(0xFF0F172A)),
                 decoration: const InputDecoration(
                   labelText: 'Container Tare Mass (g)',
-                  labelStyle: TextStyle(color: Color(0xFF94A3B8)),
+                  labelStyle: TextStyle(color: Color(0xFF64748B)),
                   border: OutlineInputBorder(),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               TextField(
                 controller: expiryCtrl,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Color(0xFF0F172A)),
                 decoration: const InputDecoration(
                   labelText: 'Expiry Date (YYYY-MM-DD)',
-                  labelStyle: TextStyle(color: Color(0xFF94A3B8)),
+                  labelStyle: TextStyle(color: Color(0xFF64748B)),
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -693,7 +721,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: const Text('Cancel', style: TextStyle(color: Color(0xFF64748B))),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -717,6 +745,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF10B981),
               foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
             child: const Text('Save Calibration'),
           ),
@@ -730,15 +759,17 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF131B2E),
-        title: const Text('Add Replenishment Item', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('Add Replenishment Item',
+            style: TextStyle(color: Color(0xFF0F172A), fontWeight: FontWeight.bold, fontSize: 16)),
         content: TextField(
           controller: nameCtrl,
           autofocus: true,
-          style: const TextStyle(color: Colors.white),
+          style: const TextStyle(color: Color(0xFF0F172A)),
           decoration: const InputDecoration(
             labelText: 'Grocery / Item Name',
-            labelStyle: TextStyle(color: Color(0xFF94A3B8)),
+            labelStyle: TextStyle(color: Color(0xFF64748B)),
             hintText: 'e.g. Greek Yogurt, Milk',
             border: OutlineInputBorder(),
           ),
@@ -746,7 +777,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: const Text('Cancel', style: TextStyle(color: Color(0xFF64748B))),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -762,6 +793,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF10B981),
               foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
             child: const Text('Add Item'),
           ),
@@ -773,41 +805,52 @@ class _HomeScreenState extends State<HomeScreen> {
   void _showSandboxSheet() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF0F172A),
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (context) {
         return Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFCBD5E1),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(6),
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF8B5CF6).withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(8),
+                      color: const Color(0xFF8B5CF6).withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Icon(Icons.science_outlined, color: Color(0xFFA78BFA), size: 18),
+                    child: const Icon(Icons.science_outlined, color: Color(0xFF7C3AED), size: 20),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 12),
                   const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Prototype Demonstration Sandbox',
+                        'Faculty Demo & Sensor Sandbox',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFFF8FAFC),
+                          color: Color(0xFF0F172A),
                         ),
                       ),
                       Text(
-                        '[DEMO MODE] Triggers hardware events for review presentation',
+                        '[DEMO MODE] Triggers physical hardware events for live evaluation',
                         style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
                       ),
                     ],
@@ -827,8 +870,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     icon: const Text('🥛'),
                     label: const Text('Pour 150ml Milk'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1E293B),
-                      foregroundColor: const Color(0xFFF8FAFC),
+                      backgroundColor: const Color(0xFFF8FAFC),
+                      foregroundColor: const Color(0xFF0F172A),
+                      elevation: 0,
+                      side: const BorderSide(color: Color(0xFFE2E8F0)),
                     ),
                   ),
                   ElevatedButton.icon(
@@ -839,8 +884,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     icon: const Text('🍊'),
                     label: const Text('Pour 120ml Juice'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1E293B),
-                      foregroundColor: const Color(0xFFF8FAFC),
+                      backgroundColor: const Color(0xFFF8FAFC),
+                      foregroundColor: const Color(0xFF0F172A),
+                      elevation: 0,
+                      side: const BorderSide(color: Color(0xFFE2E8F0)),
                     ),
                   ),
                   ElevatedButton.icon(
@@ -849,11 +896,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       _simulateLocalPour('zone1', -150.0);
                       _simulateLocalPour('zone2', -120.0);
                     },
-                    icon: const Icon(Icons.local_drink, size: 16, color: Color(0xFF06B6D4)),
+                    icon: const Icon(Icons.local_drink, size: 16, color: Color(0xFF0284C7)),
                     label: const Text('Pour Both'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1E293B),
-                      foregroundColor: const Color(0xFFF8FAFC),
+                      backgroundColor: const Color(0xFFF8FAFC),
+                      foregroundColor: const Color(0xFF0F172A),
+                      elevation: 0,
+                      side: const BorderSide(color: Color(0xFFE2E8F0)),
                     ),
                   ),
                   ElevatedButton.icon(
@@ -861,11 +910,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (context.mounted) Navigator.pop(context);
                       _simulateLocalToggleDoor();
                     },
-                    icon: const Icon(Icons.sensor_door_outlined, size: 16, color: Color(0xFFF59E0B)),
+                    icon: const Icon(Icons.sensor_door_outlined, size: 16, color: Color(0xFFD97706)),
                     label: const Text('Toggle Door Event'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1E293B),
-                      foregroundColor: const Color(0xFFF8FAFC),
+                      backgroundColor: const Color(0xFFF8FAFC),
+                      foregroundColor: const Color(0xFF0F172A),
+                      elevation: 0,
+                      side: const BorderSide(color: Color(0xFFE2E8F0)),
                     ),
                   ),
                   ElevatedButton.icon(
@@ -873,11 +924,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (context.mounted) Navigator.pop(context);
                       _simulateLocalLowStock('zone1');
                     },
-                    icon: const Icon(Icons.warning_amber_rounded, size: 16, color: Color(0xFFEF4444)),
+                    icon: const Icon(Icons.warning_amber_rounded, size: 16, color: Color(0xFFDC2626)),
                     label: const Text('Low Stock Milk (<20%)'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFEF4444).withOpacity(0.2),
-                      foregroundColor: const Color(0xFFEF4444),
+                      backgroundColor: const Color(0xFFFEE2E2),
+                      foregroundColor: const Color(0xFFDC2626),
+                      elevation: 0,
+                      side: const BorderSide(color: Color(0xFFFCA5A5)),
                     ),
                   ),
                   ElevatedButton.icon(
@@ -885,11 +938,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (context.mounted) Navigator.pop(context);
                       _simulateLocalLowStock('zone2');
                     },
-                    icon: const Icon(Icons.warning_amber_rounded, size: 16, color: Color(0xFFEF4444)),
+                    icon: const Icon(Icons.warning_amber_rounded, size: 16, color: Color(0xFFDC2626)),
                     label: const Text('Low Stock Juice (<20%)'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFEF4444).withOpacity(0.2),
-                      foregroundColor: const Color(0xFFEF4444),
+                      backgroundColor: const Color(0xFFFEE2E2),
+                      foregroundColor: const Color(0xFFDC2626),
+                      elevation: 0,
+                      side: const BorderSide(color: Color(0xFFFCA5A5)),
                     ),
                   ),
                   ElevatedButton.icon(
@@ -897,11 +952,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (context.mounted) Navigator.pop(context);
                       _simulateLocalResetFull();
                     },
-                    icon: const Icon(Icons.replay_rounded, size: 16, color: Color(0xFF10B981)),
+                    icon: const Icon(Icons.replay_rounded, size: 16, color: Color(0xFF16A34A)),
                     label: const Text('Reset All Full (100%)'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF10B981).withOpacity(0.2),
-                      foregroundColor: const Color(0xFF10B981),
+                      backgroundColor: const Color(0xFFDCFCE7),
+                      foregroundColor: const Color(0xFF16A34A),
+                      elevation: 0,
+                      side: const BorderSide(color: Color(0xFF86EFAC)),
                     ),
                   ),
                 ],
@@ -919,7 +976,8 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: const Color(0xFF131B2E),
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: Row(
             children: [
               ClipRRect(
@@ -932,8 +990,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   errorBuilder: (_, __, ___) => const Icon(Icons.wifi_tethering, color: Color(0xFF10B981), size: 24),
                 ),
               ),
-              const SizedBox(width: 8),
-              const Text('Server Connection', style: TextStyle(color: Colors.white, fontSize: 16)),
+              const SizedBox(width: 10),
+              const Text('Server Connection',
+                  style: TextStyle(color: Color(0xFF0F172A), fontSize: 16, fontWeight: FontWeight.bold)),
             ],
           ),
           content: Column(
@@ -942,23 +1001,23 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const Text(
                 'Enter the IP address or host running server.py:',
-                style: TextStyle(fontSize: 13, color: Color(0xFF94A3B8)),
+                style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: controller,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Color(0xFF0F172A)),
                 decoration: const InputDecoration(
                   labelText: 'Server Host / IP:Port',
-                  labelStyle: TextStyle(color: Color(0xFF94A3B8)),
+                  labelStyle: TextStyle(color: Color(0xFF64748B)),
                   hintText: 'e.g. smart-fridge-retrofit-module.onrender.com',
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.router, color: Color(0xFF64748B)),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               const Text('Quick Connection Presets:',
-                  style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8), fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: 11, color: Color(0xFF64748B), fontWeight: FontWeight.bold)),
               const SizedBox(height: 6),
               Row(
                 children: [
@@ -970,8 +1029,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: const Icon(Icons.cloud_outlined, size: 14),
                       label: const Text('Live Cloud', style: TextStyle(fontSize: 11)),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF38BDF8),
-                        side: const BorderSide(color: Color(0xFF0284C7)),
+                        foregroundColor: const Color(0xFF0284C7),
+                        side: const BorderSide(color: Color(0xFFBAE6FD)),
+                        backgroundColor: const Color(0xFFF0F9FF),
                         padding: const EdgeInsets.symmetric(vertical: 8),
                       ),
                     ),
@@ -985,8 +1045,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: const Icon(Icons.laptop_chromebook, size: 14),
                       label: const Text('Local Host', style: TextStyle(fontSize: 11)),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFFA78BFA),
-                        side: const BorderSide(color: Color(0xFF7C3AED)),
+                        foregroundColor: const Color(0xFF7C3AED),
+                        side: const BorderSide(color: Color(0xFFDDD6FE)),
+                        backgroundColor: const Color(0xFFF5F3FF),
                         padding: const EdgeInsets.symmetric(vertical: 8),
                       ),
                     ),
@@ -996,10 +1057,10 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 8),
               const Text(
                 'Tip: Cloud uses secure HTTPS; Local uses HTTP port 5050.',
-                style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                style: TextStyle(fontSize: 10, color: Color(0xFF94A3B8)),
               ),
               const SizedBox(height: 12),
-              const Divider(color: Color(0xFF1E293B)),
+              const Divider(color: Color(0xFFE2E8F0)),
               const SizedBox(height: 8),
               SizedBox(
                 width: double.infinity,
@@ -1019,8 +1080,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   label: const Text('🔔 Test Low Stock Alert',
                       style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFFF59E0B),
-                    side: const BorderSide(color: Color(0xFFD97706)),
+                    foregroundColor: const Color(0xFFD97706),
+                    side: const BorderSide(color: Color(0xFFFDE68A)),
+                    backgroundColor: const Color(0xFFFFFBEB),
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
@@ -1045,8 +1107,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   label: const Text('🚨 Test Door-Ajar Buzzer (>45s)',
                       style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFFEF4444),
-                    side: const BorderSide(color: Color(0xFFDC2626)),
+                    foregroundColor: const Color(0xFFDC2626),
+                    side: const BorderSide(color: Color(0xFFFECACA)),
+                    backgroundColor: const Color(0xFFFEF2F2),
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
@@ -1071,8 +1134,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   label: const Text('🌡️ Test Cold-Chain Alert (>4.5°C)',
                       style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF38BDF8),
-                    side: const BorderSide(color: Color(0xFF0284C7)),
+                    foregroundColor: const Color(0xFF0284C7),
+                    side: const BorderSide(color: Color(0xFFBAE6FD)),
+                    backgroundColor: const Color(0xFFF0F9FF),
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
@@ -1083,7 +1147,7 @@ class _HomeScreenState extends State<HomeScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: const Text('Cancel', style: TextStyle(color: Color(0xFF64748B))),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -1100,6 +1164,7 @@ class _HomeScreenState extends State<HomeScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF10B981),
                 foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               ),
               child: const Text('Save & Connect'),
             ),
@@ -1168,8 +1233,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () => _refreshAll(),
-        color: const Color(0xFF10B981),
-        backgroundColor: const Color(0xFF131B2E),
+        color: const Color(0xFF2563EB),
+        backgroundColor: Colors.white,
         child: IndexedStack(
           index: _currentTabIndex,
           children: [
@@ -1220,8 +1285,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // --- TAB 0: DASHBOARD ---
   Widget _buildDashboardTab() {
-    final zone1 = _state?.inventory['zone1'];
-    final zone2 = _state?.inventory['zone2'];
     final telemetry = _state?.telemetry ??
         TelemetryData(
           doorState: _status?.doorState ?? 'CLOSED',
@@ -1233,8 +1296,10 @@ class _HomeScreenState extends State<HomeScreen> {
           detectedObjects: [],
         );
 
+    final inventoryList = _state?.inventory.values.toList() ?? [];
+
     return ListView(
-      padding: const EdgeInsets.only(bottom: 24),
+      padding: const EdgeInsets.only(bottom: 28),
       children: [
         // Offline Warning banner if disconnected
         if (!_isConnected)
@@ -1242,13 +1307,13 @@ class _HomeScreenState extends State<HomeScreen> {
             margin: const EdgeInsets.all(16),
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: const Color(0xFFEF4444).withOpacity(0.15),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFEF4444)),
+              color: const Color(0xFFFEE2E2),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFFCA5A5)),
             ),
             child: Row(
               children: [
-                const Icon(Icons.error_outline, color: Color(0xFFEF4444)),
+                const Icon(Icons.error_outline, color: Color(0xFFDC2626)),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -1257,11 +1322,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       const Text(
                         'Hardware Module Offline',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Color(0xFFEF4444)),
+                            fontWeight: FontWeight.bold, color: Color(0xFFDC2626)),
                       ),
                       Text(
                         'Cannot reach server at $_currentHost. Tap the Wi-Fi icon top-right to edit server IP.',
-                        style: const TextStyle(fontSize: 11, color: Color(0xFFCBD5E1)),
+                        style: const TextStyle(fontSize: 11, color: Color(0xFF475569)),
                       ),
                     ],
                   ),
@@ -1270,7 +1335,253 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-        // Environmental Glance & Controls Header
+        // User Greeting & Weather pill
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 14, 20, 4),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _getTimeGreeting(),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF0F172A),
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  const Text(
+                    'Smart Retrofit Module • Node ESP32-S3',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF64748B),
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x050F172A),
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.wb_sunny_outlined, size: 14, color: Color(0xFFF59E0B)),
+                    SizedBox(width: 5),
+                    Text(
+                      '22°C Clear',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF334155),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // Executive Spotlight Card ("All Systems Working")
+        Container(
+          margin: const EdgeInsets.fromLTRB(16, 10, 16, 8),
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: const Color(0xFFE2E8F0)),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x080F172A),
+                blurRadius: 16,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFDCFCE7),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFF86EFAC)),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.check_circle, size: 13, color: Color(0xFF16A34A)),
+                        SizedBox(width: 4),
+                        Text(
+                          'ONLINE & ARMED',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.5,
+                            color: Color(0xFF15803D),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEFF6FF),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Text(
+                      'ChillSense Pro HUD',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF2563EB),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'All Systems Working',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF0F172A),
+                            letterSpacing: -0.4,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          'Dual load cells, OV3660 camera pod, and cold-chain environmental sensors operating at peak efficiency.',
+                          style: TextStyle(
+                            fontSize: 12,
+                            height: 1.4,
+                            color: Color(0xFF64748B),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        Row(
+                          children: [
+                            ElevatedButton.icon(
+                              onPressed: _isScanning ? null : _triggerScan,
+                              icon: _isScanning
+                                  ? const SizedBox(
+                                      width: 14,
+                                      height: 14,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor: AlwaysStoppedAnimation(Colors.white),
+                                      ),
+                                    )
+                                  : const Icon(Icons.camera_alt, size: 14),
+                              label: Text(
+                                _isScanning ? 'Analyzing...' : 'Scan Now',
+                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF2563EB),
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            OutlinedButton.icon(
+                              onPressed: _simulateLocalToggleDoor,
+                              icon: const Icon(Icons.sensor_door_outlined, size: 14),
+                              label: Text(
+                                telemetry.doorState.toUpperCase() == 'OPEN' ? 'Close Door' : 'Open Door',
+                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: const Color(0xFF0F172A),
+                                side: const BorderSide(color: Color(0xFFCBD5E1)),
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Container(
+                    width: 72,
+                    height: 96,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFF1F5F9), Color(0xFFE2E8F0)],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: const Color(0xFFCBD5E1)),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.kitchen_outlined, size: 36, color: Color(0xFF0284C7)),
+                        const SizedBox(height: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            '${telemetry.temperatureC.toStringAsFixed(1)}°C',
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF0284C7),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+
+        // Environmental Glance & Telemetry Metrics
         TelemetryHeader(
           status: _status,
           telemetry: telemetry,
@@ -1284,16 +1595,16 @@ class _HomeScreenState extends State<HomeScreen> {
         // Prototype Live Review Demo Dock
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
-            color: const Color(0xFF0F172A),
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: const Color(0xFF8B5CF6).withOpacity(0.35)),
-            boxShadow: [
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: const Color(0xFFE2E8F0)),
+            boxShadow: const [
               BoxShadow(
-                color: const Color(0xFF8B5CF6).withOpacity(0.08),
+                color: Color(0x060F172A),
                 blurRadius: 10,
-                offset: const Offset(0, 2),
+                offset: Offset(0, 2),
               ),
             ],
           ),
@@ -1302,7 +1613,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const Row(
                 children: [
-                  Icon(Icons.science_outlined, size: 14, color: Color(0xFFA78BFA)),
+                  Icon(Icons.science_outlined, size: 14, color: Color(0xFF7C3AED)),
                   SizedBox(width: 6),
                   Text(
                     'FACULTY REVIEW & DEMO CONTROLS',
@@ -1310,12 +1621,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.8,
-                      color: Color(0xFFA78BFA),
+                      color: Color(0xFF7C3AED),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 10),
               Column(
                 children: [
                   Row(
@@ -1371,11 +1682,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
 
-        // Dual Load Cell Liquid Tray Section
+        // Live Inventory Section
         const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          padding: EdgeInsets.fromLTRB(20, 14, 20, 6),
           child: Text(
-            'DUAL-ZONE LIQUID LEVEL (HX711 LOAD CELLS)',
+            'CHILLSENSE SMART INVENTORY (LOAD CELLS & AI VISION)',
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.bold,
@@ -1385,22 +1696,20 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
 
-        if (zone1 != null)
-          LiquidGaugeCard(
-            item: zone1,
-            iconEmoji: '🥛',
-            onPour: () => _simulateLocalPour('zone1', -150.0),
-            onLowStock: () => _simulateLocalLowStock('zone1'),
-            onCalibrate: () => _showCalibrateDialog(zone1),
-          ),
-
-        if (zone2 != null)
-          LiquidGaugeCard(
-            item: zone2,
-            iconEmoji: '🍊',
-            onPour: () => _simulateLocalPour('zone2', -120.0),
-            onLowStock: () => _simulateLocalLowStock('zone2'),
-            onCalibrate: () => _showCalibrateDialog(zone2),
+        if (inventoryList.isNotEmpty)
+          ...inventoryList.map((item) {
+            return LiquidGaugeCard(
+              item: item,
+              iconEmoji: _getItemEmoji(item.zoneId, item.itemName),
+              onPour: () => _simulateLocalPour(item.zoneId, -120.0),
+              onLowStock: () => _simulateLocalLowStock(item.zoneId),
+              onCalibrate: () => _showCalibrateDialog(item),
+            );
+          })
+        else
+          const Padding(
+            padding: EdgeInsets.all(24.0),
+            child: Center(child: CircularProgressIndicator()),
           ),
 
         // Vision Pod Card
@@ -1447,7 +1756,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const Expanded(
               child: Text(
                 'Container Calibrations',
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -1465,10 +1774,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         const Text(
           'Each liquid zone uses a dedicated 5kg strain-gauge load cell with HX711 24-bit ADC. Calibrate container tare mass and full volume capacity below.',
-          style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+          style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),
         ),
         const SizedBox(height: 16),
 
@@ -1483,7 +1792,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ...items.map((item) {
             return LiquidGaugeCard(
               item: item,
-              iconEmoji: item.zoneId == 'zone1' ? '🥛' : '🍊',
+              iconEmoji: _getItemEmoji(item.zoneId, item.itemName),
               onPour: () {
                 final delta = item.zoneId == 'zone1' ? -150.0 : -120.0;
                 _simulateLocalPour(item.zoneId, delta);
@@ -1508,7 +1817,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const Text(
               'Hardware Telemetry Pod',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
             ),
             IconButton(
               icon: const Icon(Icons.refresh, color: Color(0xFF10B981)),
@@ -1522,7 +1831,7 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 4),
         const Text(
           'Real-time diagnostic health across all physical retrofit sensors and computing pods.',
-          style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+          style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),
         ),
         const SizedBox(height: 16),
 
@@ -1538,23 +1847,30 @@ class _HomeScreenState extends State<HomeScreen> {
             final isOnline = s.status == 'ONLINE' || s.status == 'READY' || s.status == 'ACTIVE' || s.status == 'ARMED / READY';
             final isArmed = s.status == 'ARMED / READY';
             final statusColor = isArmed
-                ? const Color(0xFF06B6D4)
-                : (isOnline ? const Color(0xFF10B981) : const Color(0xFFEF4444));
+                ? const Color(0xFF0284C7)
+                : (isOnline ? const Color(0xFF16A34A) : const Color(0xFFDC2626));
             return Container(
               margin: const EdgeInsets.only(bottom: 12),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFF131B2E),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: const Color(0xFF1E293B)),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: const Color(0xFFE2E8F0)),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x060F172A),
+                    blurRadius: 10,
+                    offset: Offset(0, 3),
+                  ),
+                ],
               ),
               child: Row(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: statusColor.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(10),
+                      color: statusColor.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
                       s.id.contains('loadcell')
@@ -1584,7 +1900,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: Color(0xFF0F172A),
                                 ),
                               ),
                             ),
@@ -1592,10 +1908,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                               decoration: BoxDecoration(
-                                color: statusColor.withOpacity(0.15),
+                                color: statusColor.withOpacity(0.12),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: statusColor,
+                                  color: statusColor.withOpacity(0.3),
                                 ),
                               ),
                               child: Text(
@@ -1627,15 +1943,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFF38BDF8),
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF0284C7),
                                 ),
                               ),
                             ),
                             const SizedBox(width: 8),
                             Text(
                               s.lastReading,
-                              style: const TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                              style: const TextStyle(fontSize: 10, color: Color(0xFF94A3B8)),
                             ),
                           ],
                         ),
@@ -1660,7 +1976,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const Text(
               'Physical Event Audit Trail',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
             ),
             IconButton(
               icon: const Icon(Icons.refresh, color: Color(0xFF10B981)),
@@ -1674,7 +1990,7 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 4),
         const Text(
           'Chronological log of door transitions, camera strobe triggers, and calibration events.',
-          style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+          style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),
         ),
         const SizedBox(height: 16),
 
@@ -1702,9 +2018,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 margin: const EdgeInsets.only(bottom: 10),
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF131B2E),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFF1E293B)),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x040F172A),
+                      blurRadius: 8,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1713,11 +2036,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: isDoor
-                            ? const Color(0xFFF59E0B).withOpacity(0.15)
+                            ? const Color(0xFFF59E0B).withOpacity(0.12)
                             : (isScan
-                                ? const Color(0xFF8B5CF6).withOpacity(0.15)
-                                : const Color(0xFF10B981).withOpacity(0.15)),
-                        borderRadius: BorderRadius.circular(8),
+                                ? const Color(0xFF8B5CF6).withOpacity(0.12)
+                                : const Color(0xFF10B981).withOpacity(0.12)),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(
                         isDoor
@@ -1725,10 +2048,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             : (isScan ? Icons.camera_alt : Icons.bolt),
                         size: 16,
                         color: isDoor
-                            ? const Color(0xFFF59E0B)
+                            ? const Color(0xFFD97706)
                             : (isScan
-                                ? const Color(0xFFA78BFA)
-                                : const Color(0xFF10B981)),
+                                ? const Color(0xFF7C3AED)
+                                : const Color(0xFF16A34A)),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -1744,20 +2067,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                 style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFFE2E8F0),
+                                  color: Color(0xFF0F172A),
                                 ),
                               ),
                               Text(
                                 ev.timestamp,
                                 style: const TextStyle(
-                                    fontSize: 10, color: Color(0xFF64748B)),
+                                    fontSize: 10, color: Color(0xFF94A3B8)),
                               ),
                             ],
                           ),
                           const SizedBox(height: 4),
                           Text(
                             ev.message,
-                            style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+                            style: const TextStyle(fontSize: 12, color: Color(0xFF334155)),
                           ),
                         ],
                       ),
@@ -1780,12 +2103,12 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         const Text(
           'Hardware Configuration',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
         ),
         const SizedBox(height: 4),
         const Text(
           'Fine-tune physical sensor thresholds and automated alerting policies.',
-          style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+          style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),
         ),
         const SizedBox(height: 16),
 
@@ -1798,11 +2121,18 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         else
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-              color: const Color(0xFF131B2E),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFF1E293B)),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: const Color(0xFFE2E8F0)),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x080F172A),
+                  blurRadius: 16,
+                  offset: Offset(0, 4),
+                ),
+              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1812,10 +2142,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text('Max Safe Temperature (°C)',
-                        style: TextStyle(color: Color(0xFFE2E8F0), fontSize: 13)),
+                        style: TextStyle(color: Color(0xFF0F172A), fontSize: 13, fontWeight: FontWeight.w600)),
                     Text('${settings.tempMaxThreshold.toStringAsFixed(1)}°C',
                         style: const TextStyle(
-                            color: Color(0xFF38BDF8), fontWeight: FontWeight.bold)),
+                            color: Color(0xFF0284C7), fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Slider(
@@ -1823,22 +2153,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   min: 2.0,
                   max: 15.0,
                   divisions: 26,
-                  activeColor: const Color(0xFF06B6D4),
+                  activeColor: const Color(0xFF0284C7),
                   onChanged: (val) {
                     setState(() => settings.tempMaxThreshold = val);
                   },
                 ),
-                const Divider(color: Color(0xFF1E293B)),
+                const Divider(color: Color(0xFFF1F5F9)),
 
                 // Low stock threshold
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text('Low Stock Alert Threshold (%)',
-                        style: TextStyle(color: Color(0xFFE2E8F0), fontSize: 13)),
+                        style: TextStyle(color: Color(0xFF0F172A), fontSize: 13, fontWeight: FontWeight.w600)),
                     Text('${settings.lowStockThresholdPct.toStringAsFixed(0)}%',
                         style: const TextStyle(
-                            color: Color(0xFFF59E0B), fontWeight: FontWeight.bold)),
+                            color: Color(0xFFD97706), fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Slider(
@@ -1851,17 +2181,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     setState(() => settings.lowStockThresholdPct = val);
                   },
                 ),
-                const Divider(color: Color(0xFF1E293B)),
+                const Divider(color: Color(0xFFF1F5F9)),
 
                 // Door alarm delay
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text('Door Ajar Alarm Delay (seconds)',
-                        style: TextStyle(color: Color(0xFFE2E8F0), fontSize: 13)),
+                        style: TextStyle(color: Color(0xFF0F172A), fontSize: 13, fontWeight: FontWeight.w600)),
                     Text('${settings.doorAlarmDelaySec}s',
                         style: const TextStyle(
-                            color: Color(0xFFEF4444), fontWeight: FontWeight.bold)),
+                            color: Color(0xFFDC2626), fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Slider(
@@ -1874,13 +2204,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     setState(() => settings.doorAlarmDelaySec = val.toInt());
                   },
                 ),
-                const Divider(color: Color(0xFF1E293B)),
+                const Divider(color: Color(0xFFF1F5F9)),
 
                 // LED Strobe toggle
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
                   title: const Text('LED Strobe On Door Open',
-                      style: TextStyle(color: Color(0xFFE2E8F0), fontSize: 13)),
+                      style: TextStyle(color: Color(0xFF0F172A), fontSize: 13, fontWeight: FontWeight.w600)),
                   subtitle: const Text('Flashes auxiliary illuminator for camera capture',
                       style: TextStyle(color: Color(0xFF64748B), fontSize: 11)),
                   value: settings.ledStrobeOnOpen,
@@ -1889,13 +2219,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     setState(() => settings.ledStrobeOnOpen = val);
                   },
                 ),
-                const Divider(color: Color(0xFF1E293B)),
+                const Divider(color: Color(0xFFF1F5F9)),
 
                 // Auto Shopping List toggle
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
                   title: const Text('Automated Grocery Replenishment',
-                      style: TextStyle(color: Color(0xFFE2E8F0), fontSize: 13)),
+                      style: TextStyle(color: Color(0xFF0F172A), fontSize: 13, fontWeight: FontWeight.w600)),
                   subtitle: const Text('Pushes depleted liquids directly to shopping list',
                       style: TextStyle(color: Color(0xFF64748B), fontSize: 11)),
                   value: settings.autoShoppingList,
@@ -1927,8 +2257,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     icon: const Icon(Icons.save_outlined),
                     label: const Text('Save Hardware Settings'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF10B981),
+                      backgroundColor: const Color(0xFF2563EB),
                       foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                   ),
@@ -1943,21 +2275,28 @@ class _HomeScreenState extends State<HomeScreen> {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color(0xFF131B2E),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFF1E293B)),
+            border: Border.all(color: const Color(0xFFE2E8F0)),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x060F172A),
+                blurRadius: 10,
+                offset: Offset(0, 2),
+              ),
+            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
                 'IoT Module Network Connection',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
               ),
               const SizedBox(height: 6),
               Text(
                 'Active Host: $_currentHost',
-                style: const TextStyle(fontSize: 12, color: Color(0xFF38BDF8)),
+                style: const TextStyle(fontSize: 12, color: Color(0xFF0284C7)),
               ),
               const SizedBox(height: 12),
               ElevatedButton.icon(
@@ -1965,9 +2304,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: const Icon(Icons.wifi_tethering, size: 16),
                 label: const Text('Change Server Host / IP'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1E293B),
-                  foregroundColor: const Color(0xFFE2E8F0),
-                  side: const BorderSide(color: Color(0xFF334155)),
+                  backgroundColor: const Color(0xFFF8FAFC),
+                  foregroundColor: const Color(0xFF0F172A),
+                  elevation: 0,
+                  side: const BorderSide(color: Color(0xFFCBD5E1)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
               ),
             ],

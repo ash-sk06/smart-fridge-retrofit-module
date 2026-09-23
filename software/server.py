@@ -128,17 +128,23 @@ def init_db():
 
     # Calculate default future expiry dates
     now = datetime.now()
-    exp_milk = (now + timedelta(days=4)).strftime('%Y-%m-%d')
-    exp_juice = (now + timedelta(days=7)).strftime('%Y-%m-%d')
+    exp_milk = (now + timedelta(days=2)).strftime('%Y-%m-%d')
+    exp_juice = (now + timedelta(days=5)).strftime('%Y-%m-%d')
+    exp_eggs = (now + timedelta(days=8)).strftime('%Y-%m-%d')
+    exp_tomatoes = (now + timedelta(days=4)).strftime('%Y-%m-%d')
+    exp_apples = (now + timedelta(days=7)).strftime('%Y-%m-%d')
 
-    # Seed Default Inventory
+    # Seed Default Inventory matching reference design
     cursor.execute('''
         INSERT OR IGNORE INTO inventory 
         (zone_id, item_name, category, current_weight, tare_weight, full_volume, fill_percentage, remaining_volume, expiry_date, days_to_expiry, status, last_updated)
         VALUES 
-        ('zone1', 'Pasteurized Whole Milk', 'Dairy', 1045.0, 45.0, 1000.0, 100.0, 1000.0, ?, 4, 'OPTIMAL', CURRENT_TIMESTAMP),
-        ('zone2', 'Fresh Orange Juice', 'Beverage', 530.0, 30.0, 500.0, 100.0, 500.0, ?, 7, 'OPTIMAL', CURRENT_TIMESTAMP)
-    ''', (exp_milk, exp_juice))
+        ('zone1', 'Milk', 'Dairy', 795.0, 45.0, 1000.0, 75.0, 750.0, ?, 2, 'OPTIMAL', CURRENT_TIMESTAMP),
+        ('zone2', 'Orange Juice', 'Beverage', 230.0, 30.0, 500.0, 40.0, 200.0, ?, 5, 'LOW_STOCK', CURRENT_TIMESTAMP),
+        ('zone3', 'Eggs', 'Dairy', 360.0, 0.0, 600.0, 60.0, 6.0, ?, 8, 'OPTIMAL', CURRENT_TIMESTAMP),
+        ('zone4', 'Tomatoes', 'Produce', 400.0, 0.0, 500.0, 80.0, 4.0, ?, 4, 'OPTIMAL', CURRENT_TIMESTAMP),
+        ('zone5', 'Apples', 'Produce', 375.0, 0.0, 500.0, 75.0, 3.0, ?, 7, 'OPTIMAL', CURRENT_TIMESTAMP)
+    ''', (exp_milk, exp_juice, exp_eggs, exp_tomatoes, exp_apples))
 
     # Seed Initial Activity Log if empty
     cursor.execute('SELECT COUNT(*) FROM activity_logs')
@@ -817,6 +823,21 @@ def test_simulate():
             SET current_weight=530.0, remaining_volume=500.0, fill_percentage=100.0, status='OPTIMAL', last_updated=CURRENT_TIMESTAMP 
             WHERE zone_id="zone2"
         ''')
+        cursor.execute('''
+            UPDATE inventory 
+            SET current_weight=600.0, remaining_volume=10.0, fill_percentage=100.0, status='OPTIMAL', last_updated=CURRENT_TIMESTAMP 
+            WHERE zone_id="zone3"
+        ''')
+        cursor.execute('''
+            UPDATE inventory 
+            SET current_weight=500.0, remaining_volume=5.0, fill_percentage=100.0, status='OPTIMAL', last_updated=CURRENT_TIMESTAMP 
+            WHERE zone_id="zone4"
+        ''')
+        cursor.execute('''
+            UPDATE inventory 
+            SET current_weight=500.0, remaining_volume=4.0, fill_percentage=100.0, status='OPTIMAL', last_updated=CURRENT_TIMESTAMP 
+            WHERE zone_id="zone5"
+        ''')
         cursor.execute('DELETE FROM shopping_list')
         active_state['last_delta_dairy'] = 0.0
         active_state['last_delta_drinks'] = 0.0
@@ -824,7 +845,7 @@ def test_simulate():
         active_state['door_opened_at'] = None
         active_state['temperature_c'] = 3.8
         active_state['humidity_pct'] = 62
-        log_activity("SYSTEM_RESET", "Inventory restored to 100% capacity. Shopping replenishment list cleared.")
+        log_activity("RESET", "Restocked all 5 inventory compartments to 100% capacity. Cleared replenishment queues.")
 
     conn.commit()
     conn.close()

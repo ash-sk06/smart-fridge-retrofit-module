@@ -24,9 +24,16 @@ class CameraVisionCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: const Color(0xFF131B2E),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF1E293B)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x080F172A),
+            blurRadius: 16,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -43,11 +50,11 @@ class CameraVisionCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF8B5CF6).withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(8),
+                          color: const Color(0xFFF3E8FF),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         child: const Icon(Icons.camera_alt_outlined,
-                            size: 18, color: Color(0xFFA78BFA)),
+                            size: 18, color: Color(0xFF9333EA)),
                       ),
                       const SizedBox(width: 10),
                       const Expanded(
@@ -60,12 +67,13 @@ class CameraVisionCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFFF8FAFC),
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFF0F172A),
+                                letterSpacing: -0.2,
                               ),
                             ),
                             Text(
-                              'ESP32-CAM OV3660 • 1080p LED Strobe',
+                              'ESP32-CAM OV3660 • 1080p Strobe',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
@@ -86,12 +94,12 @@ class CameraVisionCard extends StatelessWidget {
                                 width: 16,
                                 height: 16,
                                 child: CircularProgressIndicator(
-                                    strokeWidth: 2, color: Color(0xFFA78BFA)),
+                                    strokeWidth: 2, color: Color(0xFF9333EA)),
                               )
                             : const Icon(Icons.flash_on_outlined, size: 20),
                         tooltip: 'Trigger Strobe Scan',
                         style: IconButton.styleFrom(
-                          foregroundColor: const Color(0xFFA78BFA),
+                          foregroundColor: const Color(0xFF9333EA),
                         ),
                         onPressed: isScanning ? null : onTriggerScan,
                       ),
@@ -111,14 +119,14 @@ class CameraVisionCard extends StatelessWidget {
 
             // Image Preview Container
             ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(14),
               child: Container(
                 height: 190,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF0B1120),
-                  border: Border.all(color: const Color(0xFF1E293B)),
-                  borderRadius: BorderRadius.circular(12),
+                  color: const Color(0xFF0F172A),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                  borderRadius: BorderRadius.circular(14),
                 ),
                 child: Stack(
                   children: [
@@ -149,7 +157,7 @@ class CameraVisionCard extends StatelessWidget {
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
                           return const Center(
-                            child: CircularProgressIndicator(color: Color(0xFF8B5CF6)),
+                            child: CircularProgressIndicator(color: Color(0xFF9333EA)),
                           );
                         },
                       ),
@@ -161,7 +169,7 @@ class CameraVisionCard extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.7),
+                          color: Colors.black.withValues(alpha: 0.7),
                           borderRadius: BorderRadius.circular(6),
                           border: Border.all(color: Colors.white24),
                         ),
@@ -192,14 +200,14 @@ class CameraVisionCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Icon(Icons.cloud_outlined, size: 14, color: Color(0xFF06B6D4)),
+                const Icon(Icons.cloud_outlined, size: 14, color: Color(0xFF0284C7)),
                 const SizedBox(width: 6),
                 const Text(
-                  'YOLOv8 Cloud Engine:',
+                  'YOLOv8 Cloud:',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFFE2E8F0),
+                    color: Color(0xFF0F172A),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -219,16 +227,16 @@ class CameraVisionCard extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 8, vertical: 2),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF8B5CF6).withOpacity(0.15),
-                                borderRadius: BorderRadius.circular(12),
+                                color: const Color(0xFFF3E8FF),
+                                borderRadius: BorderRadius.circular(10),
                                 border: Border.all(
-                                    color: const Color(0xFF8B5CF6).withOpacity(0.4)),
+                                    color: const Color(0xFFD8B4FE)),
                               ),
                               child: Text(
                                 obj,
                                 style: const TextStyle(
                                   fontSize: 11,
-                                  color: Color(0xFFC4B5FD),
+                                  color: Color(0xFF7E22CE),
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),

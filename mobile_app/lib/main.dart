@@ -16,40 +16,43 @@ class FridgeSmartApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
-        brightness: Brightness.dark,
-        colorScheme: const ColorScheme.dark(
-          primary: Color(0xFF10B981), // Emerald
-          secondary: Color(0xFF06B6D4), // Cyan
-          surface: Color(0xFF131B2E), // Card slate
+        brightness: Brightness.light,
+        colorScheme: const ColorScheme.light(
+          primary: Color(0xFF2563EB), // Royal Blue
+          secondary: Color(0xFF10B981), // Emerald
+          surface: Colors.white, // Crisp White Card
           error: Color(0xFFEF4444),
         ),
-        scaffoldBackgroundColor: const Color(0xFF090D16), // Dark canvas
+        scaffoldBackgroundColor: const Color(0xFFF4F7FC), // Soft Slate Canvas
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF0B1120),
-          foregroundColor: Color(0xFFF8FAFC),
+          backgroundColor: Colors.white,
+          foregroundColor: Color(0xFF0F172A),
           elevation: 0,
+          scrolledUnderElevation: 1,
           centerTitle: false,
           titleTextStyle: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFFF8FAFC),
-            letterSpacing: 0.2,
+            fontSize: 17,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF0F172A),
+            letterSpacing: -0.2,
           ),
         ),
         cardTheme: CardThemeData(
-          color: const Color(0xFF131B2E),
+          color: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: const BorderSide(color: Color(0xFF1E293B), width: 1),
+            borderRadius: BorderRadius.circular(20),
+            side: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
           ),
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: Color(0xFF0B1120),
-          selectedItemColor: Color(0xFF10B981),
-          unselectedItemColor: Color(0xFF64748B),
+          backgroundColor: Colors.white,
+          selectedItemColor: Color(0xFF2563EB),
+          unselectedItemColor: Color(0xFF94A3B8),
+          selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
+          unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 11),
           type: BottomNavigationBarType.fixed,
-          elevation: 8,
+          elevation: 6,
         ),
       ),
       home: const HomeScreen(),

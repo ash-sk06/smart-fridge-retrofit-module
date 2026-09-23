@@ -35,27 +35,26 @@ class TelemetryHeader extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF131B2E),
-        borderRadius: BorderRadius.circular(16),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isDoorOpen
-              ? const Color(0xFFF59E0B).withOpacity(0.8)
-              : const Color(0xFF1E293B),
+              ? const Color(0xFFEF4444)
+              : const Color(0xFFE2E8F0),
           width: isDoorOpen ? 1.5 : 1,
         ),
-        boxShadow: [
-          if (isDoorOpen)
-            BoxShadow(
-              color: const Color(0xFFF59E0B).withOpacity(0.15),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x080F172A),
+            blurRadius: 16,
+            offset: Offset(0, 4),
+          ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Row 1: System Title + Hardware Status Pill + Last Sync
+          // Row 1: System Title + Hardware Status Pill
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -64,18 +63,19 @@ class TelemetryHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      status?.fridgeName ?? 'Primary Refrigerator',
+                      status?.fridgeName ?? 'Main Kitchen Refrigerator',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFF8FAFC),
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF0F172A),
+                        letterSpacing: -0.2,
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Sync: ${status?.lastSync ?? "Just now"}',
+                      'ESP32-S2 Hub • ${status?.lastSync ?? "Live"}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
@@ -89,27 +89,26 @@ class TelemetryHeader extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
                   color: isConnected
-                      ? (isHardware
-                          ? const Color(0xFF10B981).withOpacity(0.15)
-                          : const Color(0xFF06B6D4).withOpacity(0.15))
-                      : const Color(0xFFEF4444).withOpacity(0.15),
+                      ? (isHardware ? const Color(0xFFECFDF5) : const Color(0xFFEFF6FF))
+                      : const Color(0xFFFEF2F2),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isConnected
-                        ? (isHardware ? const Color(0xFF10B981) : const Color(0xFF06B6D4))
+                        ? (isHardware ? const Color(0xFF10B981) : const Color(0xFF3B82F6))
                         : const Color(0xFFEF4444),
+                    width: 1,
                   ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      width: 8,
-                      height: 8,
+                      width: 7,
+                      height: 7,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: isConnected
-                            ? (isHardware ? const Color(0xFF10B981) : const Color(0xFF06B6D4))
+                            ? (isHardware ? const Color(0xFF10B981) : const Color(0xFF3B82F6))
                             : const Color(0xFFEF4444),
                       ),
                     ),
@@ -117,14 +116,14 @@ class TelemetryHeader extends StatelessWidget {
                     Text(
                       !isConnected
                           ? 'OFFLINE'
-                          : (isHardware ? 'HARDWARE ONLINE' : 'SIMULATION MODE'),
+                          : (isHardware ? 'ONLINE' : 'CONNECTED'),
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
-                        letterSpacing: 0.4,
+                        letterSpacing: 0.3,
                         color: isConnected
-                            ? (isHardware ? const Color(0xFF10B981) : const Color(0xFF06B6D4))
-                            : const Color(0xFFEF4444),
+                            ? (isHardware ? const Color(0xFF065F46) : const Color(0xFF1D4ED8))
+                            : const Color(0xFF991B1B),
                       ),
                     ),
                   ],
@@ -140,54 +139,60 @@ class TelemetryHeader extends StatelessWidget {
               // Temperature
               Expanded(
                 child: _buildMetricTile(
-                  icon: Icons.thermostat_outlined,
-                  iconColor: isTempWarm ? const Color(0xFFEF4444) : const Color(0xFF06B6D4),
-                  label: 'TEMP (DHT22)',
+                  icon: Icons.thermostat,
+                  iconColor: isTempWarm ? const Color(0xFFEF4444) : const Color(0xFF2563EB),
+                  label: 'Ideal: 1°C - 5°C',
+                  title: 'Temperature',
                   value: '${tempC.toStringAsFixed(1)}°C',
+                  statusText: isTempWarm ? 'Warm' : 'Normal',
                   statusColor: isTempWarm ? const Color(0xFFEF4444) : const Color(0xFF10B981),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 10),
               // Humidity
               Expanded(
                 child: _buildMetricTile(
-                  icon: Icons.water_drop_outlined,
-                  iconColor: const Color(0xFF38BDF8),
-                  label: 'HUMIDITY',
+                  icon: Icons.water_drop,
+                  iconColor: const Color(0xFF06B6D4),
+                  label: 'Ideal: 50% - 70%',
+                  title: 'Humidity',
                   value: '$humidity%',
+                  statusText: 'Normal',
                   statusColor: const Color(0xFF10B981),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
           Row(
             children: [
               // Door Status
               Expanded(
                 child: InkWell(
                   onTap: onToggleDoor,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(14),
                   child: _buildMetricTile(
-                    icon: isDoorOpen
-                        ? Icons.meeting_room_outlined
-                        : Icons.door_front_door_outlined,
+                    icon: isDoorOpen ? Icons.door_sliding : Icons.meeting_room_outlined,
                     iconColor: isDoorOpen ? const Color(0xFFEF4444) : const Color(0xFF10B981),
-                    label: 'DOOR SWITCH',
-                    value: isDoorOpen ? 'OPEN' : 'CLOSED',
+                    label: isDoorOpen ? 'Buzzer >45s' : 'Magnetic Safe',
+                    title: 'Door Switch',
+                    value: isDoorOpen ? 'OPEN' : 'Closed',
+                    statusText: isDoorOpen ? 'Open' : 'Safe',
                     statusColor: isDoorOpen ? const Color(0xFFEF4444) : const Color(0xFF10B981),
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 10),
               // Total Shelf Load
               Expanded(
                 child: _buildMetricTile(
                   icon: Icons.scale_outlined,
-                  iconColor: const Color(0xFFA855F7),
-                  label: 'SHELF LOAD',
+                  iconColor: const Color(0xFF8B5CF6),
+                  label: 'Dual Cantilever',
+                  title: 'Shelf Load',
                   value: '${shelfMass.toStringAsFixed(0)}g',
-                  statusColor: const Color(0xFF94A3B8),
+                  statusText: 'Optimal',
+                  statusColor: const Color(0xFF64748B),
                 ),
               ),
             ],
@@ -198,30 +203,31 @@ class TelemetryHeader extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: OutlinedButton.icon(
+                child: ElevatedButton.icon(
                   onPressed: isScanning ? null : onScanNow,
                   icon: isScanning
                       ? const SizedBox(
                           width: 14,
                           height: 14,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF06B6D4)),
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                         )
                       : const Icon(Icons.camera_alt_outlined, size: 16),
                   label: Text(
-                    isScanning ? 'Capturing...' : 'Scan Now (OV3660)',
+                    isScanning ? 'Scanning...' : 'Scan Now (OV3660)',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
                   ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF06B6D4),
-                    side: const BorderSide(color: Color(0xFF0284C7)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2563EB),
+                    foregroundColor: Colors.white,
+                    elevation: 0,
                     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 10),
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: onTareScale,
@@ -233,10 +239,10 @@ class TelemetryHeader extends StatelessWidget {
                     style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
                   ),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF94A3B8),
-                    side: const BorderSide(color: Color(0xFF334155)),
+                    foregroundColor: const Color(0xFF475569),
+                    side: const BorderSide(color: Color(0xFFCBD5E1)),
                     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
               ),
@@ -250,56 +256,82 @@ class TelemetryHeader extends StatelessWidget {
   Widget _buildMetricTile({
     required IconData icon,
     required Color iconColor,
-    required String label,
+    required String title,
     required String value,
+    required String label,
+    required String statusText,
     required Color statusColor,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFF0B1120),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFF1E293B)),
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, size: 18, color: iconColor),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  value,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: iconColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, size: 16, color: iconColor),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: statusColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  statusText,
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 9,
                     fontWeight: FontWeight.bold,
                     color: statusColor,
                   ),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF64748B),
-                    letterSpacing: 0.3,
-                  ),
-                ),
-              ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFF0F172A),
+              letterSpacing: -0.3,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF64748B),
+            ),
+          ),
+          const SizedBox(height: 1),
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 8.5,
+              fontWeight: FontWeight.w500,
+              color: Color(0xFF94A3B8),
             ),
           ),
         ],

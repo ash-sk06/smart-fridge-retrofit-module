@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E2E8F0"/>
+      <stop offset="40%" stop-color="#CBD5E1"/>
+      <stop offset="100%" stop-color="#94A3B8"/>
+    </linearGradient>
+    <linearGradient id="doorGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.8"/>
+      <stop offset="20%" stop-color="#E2E8F0"/>
+      <stop offset="80%" stop-color="#CBD5E1"/>
+      <stop offset="100%" stop-color="#94A3B8"/>
+    </linearGradient>
+    <linearGradient id="glassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7" stop-opacity="0.15"/>
+      <stop offset="50%" stop-color="#38BDF8" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#0369A1" stop-opacity="0.2"/>
+    </linearGradient>
+    <linearGradient id="ledGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#0EA5E9"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+    <filter id="fridgeShadow" x="-20%" y="-10%" width="140%" height="130%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#0F172A" flood-opacity="0.15"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0F172A" flood-opacity="0.08"/>
+    </filter>
+    <filter id="blueGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#0EA5E9" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+
+  <!-- Refrigerator Body -->
+  <g filter="url(#fridgeShadow)">
+    <!-- Main Chassis -->
+    <rect x="50" y="40" width="300" height="520" rx="28" fill="url(#bodyGrad)"/>
+    <rect x="52" y="42" width="296" height="516" rx="26" fill="none" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="2"/>
+
+    <!-- Top Freezer / Upper Door -->
+    <rect x="62" y="52" width="276" height="236" rx="18" fill="url(#doorGrad)"/>
+    <rect x="62" y="52" width="276" height="236" rx="18" fill="none" stroke="#FFFFFF" stroke-opacity="0.7" stroke-width="1.5"/>
+
+    <!-- Smart Glass Window / Touch Display on Upper Door -->
+    <rect x="88" y="76" width="160" height="188" rx="12" fill="#0F172A" fill-opacity="0.85"/>
+    <rect x="88" y="76" width="160" height="188" rx="12" fill="url(#glassGrad)"/>
+    <rect x="88" y="76" width="160" height="188" rx="12" fill="none" stroke="#38BDF8" stroke-opacity="0.4" stroke-width="1.5"/>
+
+    <!-- Interior Light Reflection on Glass Window -->
+    <line x1="98" y1="86" x2="220" y2="86" stroke="#38BDF8" stroke-opacity="0.5" stroke-width="2" stroke-linecap="round"/>
+    <path d="M 98 120 L 150 120" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M 98 132 L 130 132" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Inside Shelf Silhouette Visible Through Smart Glass -->
+    <rect x="100" y="150" width="136" height="4" rx="2" fill="#38BDF8" fill-opacity="0.3"/>
+    <rect x="110" y="118" width="16" height="32" rx="3" fill="#FFFFFF" fill-opacity="0.4"/>
+    <rect x="134" y="122" width="20" height="28" rx="4" fill="#F59E0B" fill-opacity="0.5"/>
+
+    <!-- Temperature HUD on Smart Glass -->
+    <text x="100" y="240" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">3.8°C</text>
+    <circle cx="168" cy="232" r="3" fill="#10B981" filter="url(#blueGlow)"/>
+
+    <!-- Upper Handle (Recessed Right Side) -->
+    <rect x="306" y="80" width="8" height="180" rx="4" fill="#64748B"/>
+    <rect x="307" y="82" width="4" height="176" rx="2" fill="#94A3B8"/>
+
+    <!-- Middle Divider & IoT Sensor LED Strip -->
+    <rect x="58" y="292" width="284" height="14" rx="3" fill="#334155"/>
+    <rect x="74" y="297" width="252" height="4" rx="2" fill="url(#ledGrad)" filter="url(#blueGlow)"/>
+
+    <!-- Lower Refrigerator Door -->
+    <rect x="62" y="310" width="276" height="236" rx="18" fill="url(#doorGrad)"/>
+    <rect x="62" y="310" width="276" height="236" rx="18" fill="none" stroke="#FFFFFF" stroke-opacity="0.7" stroke-width="1.5"/>
+
+    <!-- Water / Ice Dispenser Inset on Lower Door -->
+    <rect x="88" y="336" width="76" height="100" rx="10" fill="#1E293B"/>
+    <rect x="92" y="340" width="68" height="92" rx="8" fill="#0F172A"/>
+    <!-- Dispenser Paddle & LED -->
+    <rect x="120" y="360" width="12" height="40" rx="3" fill="#64748B"/>
+    <circle cx="126" cy="350" r="2.5" fill="#38BDF8" filter="url(#blueGlow)"/>
+
+    <!-- Lower Handle (Recessed Right Side) -->
+    <rect x="306" y="336" width="8" height="180" rx="4" fill="#64748B"/>
+    <rect x="307" y="338" width="4" height="176" rx="2" fill="#94A3B8"/>
+
+    <!-- ChillSense Metal Badge -->
+    <rect x="220" y="340" width="70" height="18" rx="4" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+    <text x="255" y="353" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="800" fill="#94A3B8" text-anchor="middle" letter-spacing="1">CHILLSENSE</text>
+
+    <!-- Base / Feet -->
+    <rect x="80" y="560" width="40" height="12" rx="3" fill="#334155"/>
+    <rect x="280" y="560" width="40" height="12" rx="3" fill="#334155"/>
+  </g>
+</svg>
